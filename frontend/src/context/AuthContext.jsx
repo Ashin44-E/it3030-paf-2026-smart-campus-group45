@@ -10,24 +10,31 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser(decoded.sub);
-        setRole(decoded.role);
-        localStorage.setItem('token', token);
-      } catch (error) {
-        console.error("Invalid token", error);
-        logout();
+    const initAuth = async () => {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setUser(decoded.sub);
+          // Standardize role to uppercase string if it exists
+          const decodedRole = decoded.role ? String(decoded.role).toUpperCase() : null;
+          setRole(decodedRole);
+          localStorage.setItem('token', token);
+        } catch (error) {
+          console.error("Invalid token", error);
+          logout();
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+    initAuth();
   }, [token]);
 
   const login = (data) => {
     setToken(data.token);
     setUser(data.email);
-    setRole(data.role);
+    // Standardize role from API response as well
+    const apiRole = data.role ? String(data.role).toUpperCase() : null;
+    setRole(apiRole);
     localStorage.setItem('token', data.token);
   };
 

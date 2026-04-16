@@ -14,9 +14,11 @@ const OAuth2Callback = () => {
         const response = await axiosInstance.get('/auth/oauth2/success');
         login(response.data);
         if (response.data.role === 'ADMIN') {
-          navigate('/admin');
+          navigate('/dashboard/admin');
+        } else if (response.data.role === 'TECHNICIAN') {
+          navigate('/dashboard/technician');
         } else {
-          navigate('/dashboard');
+          navigate('/dashboard/user');
         }
       } catch (error) {
         console.error("OAuth2 failed", error);

@@ -11,7 +11,8 @@ const ProtectedRoute = ({ allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(role)) {
+  if (allowedRoles && (!role || !allowedRoles.includes(role.toUpperCase()))) {
+    console.warn(`Access denied for role: ${role}. Required: ${allowedRoles}`);
     return <Navigate to="/unauthorized" replace />;
   }
 

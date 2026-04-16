@@ -16,13 +16,13 @@ const Sidebar = () => {
   const { logout } = useAuth();
 
   const menuItems = [
-    { name: 'Dashboard', icon: <BiGridAlt />, path: '/user/dashboard' },
-    { name: 'My Bookings', icon: <BiCalendarCheck />, path: '/user/bookings' },
-    { name: 'Create Booking', icon: <BiPlusCircle />, path: '/user/create-booking' },
-    { name: 'My Tickets', icon: <BiWrench />, path: '/user/tickets' },
-    { name: 'Create Ticket', icon: <BiPlusCircle />, path: '/user/create-ticket' },
-    { name: 'Notifications', icon: <BiBell />, path: '/user/notifications' },
-    { name: 'Profile', icon: <BiUser />, path: '/user/profile' },
+    { name: 'Dashboard', icon: <BiGridAlt />, path: '/dashboard/user' },
+    { name: 'My Bookings', icon: <BiCalendarCheck />, path: '/dashboard/user/bookings' },
+    { name: 'Create Booking', icon: <BiPlusCircle />, path: '/dashboard/user/create-booking' },
+    { name: 'My Tickets', icon: <BiWrench />, path: '/dashboard/user/tickets' },
+    { name: 'Create Ticket', icon: <BiPlusCircle />, path: '/dashboard/user/create-ticket' },
+    { name: 'Notifications', icon: <BiBell />, path: '/dashboard/user/notifications' },
+    { name: 'Profile', icon: <BiUser />, path: '/dashboard/user/profile' },
   ];
 
   return (

@@ -28,9 +28,11 @@ const Register = () => {
       const response = await axiosInstance.post('/auth/register', formData);
       login(response.data);
       if (response.data.role === 'ADMIN') {
-        navigate('/admin');
+        navigate('/dashboard/admin');
+      } else if (response.data.role === 'TECHNICIAN') {
+        navigate('/dashboard/technician');
       } else {
-        navigate('/dashboard');
+        navigate('/dashboard/user');
       }
     } catch (err) {
       setError(err.response?.data || 'Registration failed. Please try again.');
