@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { UserPlus, User, Mail, Lock } from 'lucide-react';
+import { BiUserPlus, BiUser, BiEnvelope, BiLock } from 'react-icons/bi';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -35,79 +36,96 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md glass-morphism rounded-3xl p-8 shadow-2xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-500/20 mb-4">
-            <UserPlus className="w-8 h-8 text-primary-400" />
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-5 shadow-lg w-100" 
+        style={{ maxWidth: '450px' }}
+      >
+        <div className="text-center mb-4">
+          <div className="d-inline-flex align-items-center justify-content-center rounded-4 bg-primary bg-opacity-10 p-3 mb-3">
+            <BiUserPlus size={32} className="text-primary" />
           </div>
-          <h1 className="text-3xl font-bold gradient-text">Create Account</h1>
-          <p className="text-slate-400 mt-2">Join the Smart Campus Operations Hub</p>
+          <h1 className="h3 fw-bold gradient-text">Create Account</h1>
+          <p className="text-secondary">Join the Smart Campus Operations Hub</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+          <div className="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger mb-4 rounded-3">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3 position-relative">
+            <span className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+              <BiUser />
+            </span>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary-500 transition-colors"
+              className="form-control form-control-lg bg-dark bg-opacity-25 border-secondary border-opacity-25 text-white ps-5"
               placeholder="Full Name"
               required
+              style={{ fontSize: '0.95rem' }}
             />
           </div>
 
-          <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <div className="mb-3 position-relative">
+            <span className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+              <BiEnvelope />
+            </span>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary-500 transition-colors"
+              className="form-control form-control-lg bg-dark bg-opacity-25 border-secondary border-opacity-25 text-white ps-5"
               placeholder="Email address"
               required
+              style={{ fontSize: '0.95rem' }}
             />
           </div>
 
-          <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <div className="mb-4 position-relative">
+            <span className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+              <BiLock />
+            </span>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary-500 transition-colors"
-              placeholder="Password (min 6 characters)"
+              className="form-control form-control-lg bg-dark bg-opacity-25 border-secondary border-opacity-25 text-white ps-5"
+              placeholder="Password"
               required
               minLength={6}
+              style={{ fontSize: '0.95rem' }}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-primary-600/20 disabled:opacity-50"
+            className="btn btn-primary btn-lg w-100 fw-semibold rounded-3 shadow-sm mb-4"
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? (
+              <span className="spinner-border spinner-border-sm me-2"></span>
+            ) : null}
+            Create Account
           </button>
         </form>
 
-        <p className="text-center mt-8 text-slate-400">
+        <p className="text-center mb-0 text-secondary">
           Already have an account?{' '}
-          <Link to="/login" className="text-primary-400 hover:underline">
+          <Link to="/login" className="text-primary text-decoration-none">
             Sign In
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

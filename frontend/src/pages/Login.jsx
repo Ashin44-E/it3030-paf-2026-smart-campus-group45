@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, Mail, Lock, Chrome } from 'lucide-react';
+import { BiLogIn, BiEnvelope, BiLock, BiGlobe } from 'react-icons/bi';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -32,80 +33,92 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md glass-morphism rounded-3xl p-8 shadow-2xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-500/20 mb-4">
-            <LogIn className="w-8 h-8 text-primary-400" />
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-5 shadow-lg w-100" 
+        style={{ maxWidth: '450px' }}
+      >
+        <div className="text-center mb-4">
+          <div className="d-inline-flex align-items-center justify-content-center rounded-4 bg-primary bg-opacity-10 p-3 mb-3">
+            <BiLogIn size={32} className="text-primary" />
           </div>
-          <h1 className="text-3xl font-bold gradient-text">Welcome Back</h1>
-          <p className="text-slate-400 mt-2">Sign in to your Smart Campus account</p>
+          <h1 className="h3 fw-bold gradient-text">Welcome Back</h1>
+          <p className="text-secondary">Sign in to your Smart Campus account</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+          <div className="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger mb-4 rounded-3">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3 position-relative">
+            <span className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+              <BiEnvelope />
+            </span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary-500 transition-colors"
+              className="form-control form-control-lg bg-dark bg-opacity-25 border-secondary border-opacity-25 text-white ps-5"
               placeholder="Email address"
               required
+              style={{ fontSize: '0.95rem' }}
             />
           </div>
 
-          <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <div className="mb-4 position-relative">
+            <span className="position-absolute h-100 d-flex align-items-center ps-3 text-secondary">
+              <BiLock />
+            </span>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary-500 transition-colors"
+              className="form-control form-control-lg bg-dark bg-opacity-25 border-secondary border-opacity-25 text-white ps-5"
               placeholder="Password"
               required
+              style={{ fontSize: '0.95rem' }}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-primary-600/20 disabled:opacity-50"
+            className="btn btn-primary btn-lg w-100 fw-semibold rounded-3 shadow-sm mb-3"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <span className="spinner-border spinner-border-sm me-2"></span>
+            ) : null}
+            Sign In
           </button>
         </form>
 
-        <div className="mt-8">
-          <div className="relative text-center mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700"></div>
-            </div>
-            <span className="relative px-4 bg-transparent text-slate-500 text-sm uppercase">Or continue with</span>
-          </div>
-
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-900 font-semibold py-3 rounded-xl transition-all"
-          >
-            <Chrome className="w-5 h-5" />
-            Sign in with Google
-          </button>
+        <div className="my-4 position-relative text-center">
+          <hr className="text-secondary opacity-25" />
+          <span className="position-absolute top-50 start-50 translate-middle px-3 bg-dark text-secondary small">
+            Or continue with
+          </span>
         </div>
 
-        <p className="text-center mt-8 text-slate-400">
+        <button
+          onClick={handleGoogleLogin}
+          className="btn btn-light btn-lg w-100 fw-semibold rounded-3 d-flex align-items-center justify-content-center gap-2 mb-4"
+        >
+          <BiGlobe size={20} className="text-primary" />
+          Sign in with Google
+        </button>
+
+        <p className="text-center mb-0 text-secondary">
           Don't have an account?{' '}
-          <Link to="/register" className="text-primary-400 hover:underline">
+          <Link to="/register" className="text-primary text-decoration-none">
             Create one
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };
