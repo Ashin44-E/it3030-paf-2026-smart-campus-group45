@@ -8,6 +8,7 @@ import ResourceOverviewPanel from '../components/admin-dashboard/ResourceOvervie
 import UserManagementPanel from '../components/admin-dashboard/UserManagementPanel';
 import NotificationPanel from '../components/admin-dashboard/NotificationPanel';
 import RecentActivities from '../components/admin-dashboard/RecentActivities';
+import AddResourceForm from '../components/admin-dashboard/AddResourceForm';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
@@ -175,9 +176,12 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="row g-4">
+          <div className="row g-4 mb-4">
             {/* Resources Section */}
             <div className="col-12 col-xl-7">
+               <div className="mb-4">
+                 <AddResourceForm onResourceAdded={() => window.location.reload()} />
+               </div>
                <ResourceOverviewPanel 
                 resources={data.resources}
                 onStatusUpdate={(id, s) => console.log("Status update", id, s)}
