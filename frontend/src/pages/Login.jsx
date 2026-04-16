@@ -20,7 +20,11 @@ const Login = () => {
     try {
       const response = await axiosInstance.post('/auth/login', { email, password });
       login(response.data);
-      navigate('/dashboard');
+      if (response.data.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data || 'Login failed. Please check your credentials.');
     } finally {

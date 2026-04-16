@@ -11,11 +11,13 @@ const OAuth2Callback = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // In a real scenario, the backend would redirect here with data after success
-        // or we fetch it from the success endpoint
         const response = await axiosInstance.get('/auth/oauth2/success');
         login(response.data);
-        navigate('/dashboard');
+        if (response.data.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       } catch (error) {
         console.error("OAuth2 failed", error);
         navigate('/login?error=oauth_failed');

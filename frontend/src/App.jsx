@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Unauthorized from './pages/Unauthorized';
 import OAuth2Callback from './pages/OAuth2Callback';
 
+import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
 
 function App() {
@@ -21,13 +22,13 @@ function App() {
           <Route path="/oauth2/callback" element={<OAuth2Callback />} />
           
           {/* Protected Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['USER']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['USER', 'ADMIN']} />}>
             <Route path="/dashboard" element={<UserDashboard />} />
           </Route>
 
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
-            <Route path="/admin" element={<div className="p-8">Admin Panel Item</div>} />
+            <Route path="/admin" element={<AdminDashboard />} />
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />
