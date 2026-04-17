@@ -1,5 +1,5 @@
 import React from 'react';
-import { BiPlusCircle, BiWrench, BiSearch, BiCalendarCheck } from 'react-icons/bi';
+import { BiPlusCircle, BiWrench, BiCalendarCheck } from 'react-icons/bi';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,7 +38,6 @@ const QuickActions = () => {
     { label: 'Create New Booking', icon: <BiPlusCircle />, color: 'primary', delay: 0.5 },
     { label: 'Manage My Bookings', icon: <BiCalendarCheck />, color: 'success', delay: 0.6 },
     { label: 'Report New Incident', icon: <BiWrench />, color: 'warning', delay: 0.7 },
-    { label: 'Explore Resources', icon: <BiSearch />, color: 'info', delay: 0.8 },
   ];
 
 

@@ -6,7 +6,6 @@ import TechnicianStatsCards from '../components/technician-dashboard/TechnicianS
 import AssignedTicketsPanel from '../components/technician-dashboard/AssignedTicketsPanel';
 import TicketDetailsModal from '../components/technician-dashboard/TicketDetailsModal';
 import NotificationsPanel from '../components/technician-dashboard/NotificationsPanel';
-import WorkSummaryPanel from '../components/technician-dashboard/WorkSummaryPanel';
 import BookingApprovalPanel from '../components/admin-dashboard/BookingApprovalPanel';
 import BookingDetailsModal from '../components/technician-dashboard/BookingDetailsModal';
 import { useAuth } from '../context/AuthContext';
@@ -202,7 +201,6 @@ const TechnicianDashboard = () => {
 
             <div className="col-12 col-xl-4 d-flex flex-column gap-4">
               <NotificationsPanel notifications={data.notifications} />
-              <WorkSummaryPanel />
             </div>
           </div>
         </main>
