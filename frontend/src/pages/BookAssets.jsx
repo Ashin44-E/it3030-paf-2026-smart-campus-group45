@@ -38,6 +38,8 @@ const BookAssets = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [bookingDate, setBookingDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
+  const [purpose, setPurpose] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -78,13 +80,27 @@ const BookAssets = () => {
       return;
     }
 
+    if (!purpose.trim()) {
+      toast.error("Please provide a purpose for reservation");
+      return;
+    }
+
+    // Sri Lankan phone number validation
+    const slPhoneRegex = /^(?:\+94|0)?7\d{8}$/;
+    if (!slPhoneRegex.test(phoneNumber)) {
+      toast.error("Please enter a valid Sri Lankan phone number");
+      return;
+    }
+
     setSubmitting(true);
     try {
       await axiosInstance.post('/bookings', {
         resourceId: selectedResource.id,
         resourceName: selectedResource.resourceName,
         date: bookingDate,
-        timeRange: timeSlot
+        timeRange: timeSlot,
+        purpose: purpose,
+        phoneNumber: phoneNumber
       });
       toast.success("Booking request submitted successfully!");
       setIsModalOpen(false);
@@ -306,6 +322,30 @@ const BookAssets = () => {
                       <option value="14:00 - 16:00">02:00 PM - 04:00 PM</option>
                       <option value="16:00 - 18:00">04:00 PM - 06:00 PM</option>
                     </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label small fw-bold text-slate-600">Contact Number (Sri Lanka)</label>
+                    <input 
+                      type="text" 
+                      className="form-control rounded-3 border-light bg-light shadow-none px-3 py-2"
+                      placeholder="e.g., 0712345678"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label small fw-bold text-slate-600">Purpose for Reservation</label>
+                    <textarea 
+                      className="form-control rounded-3 border-light bg-light shadow-none px-3 py-2"
+                      rows="3"
+                      placeholder="Describe why you need this asset..."
+                      value={purpose}
+                      onChange={(e) => setPurpose(e.target.value)}
+                      required
+                    ></textarea>
                   </div>
 
                   <div className="d-flex gap-3 pt-3 border-top border-light">

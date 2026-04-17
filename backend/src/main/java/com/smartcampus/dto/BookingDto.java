@@ -14,4 +14,6 @@ public class BookingDto {
     private String resourceName;
     private String date;
     private String timeRange;
+    private String purpose;
+    private String phoneNumber;
 }

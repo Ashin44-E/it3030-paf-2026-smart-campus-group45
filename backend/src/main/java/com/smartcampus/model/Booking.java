@@ -24,6 +24,8 @@ public class Booking {
     private String resourceName;
     private String date;
     private String timeRange;
+    private String purpose;
+    private String phoneNumber;
     
     private BookingStatus status;
     private String reason; // Rejection reason

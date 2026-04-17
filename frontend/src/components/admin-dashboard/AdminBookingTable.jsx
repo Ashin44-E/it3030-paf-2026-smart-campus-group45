@@ -29,6 +29,8 @@ const AdminBookingTable = ({ bookings, onApprove, onReject }) => {
               <th className="ps-4 py-3 text-slate-800 small fw-bold text-uppercase">Requester</th>
               <th className="py-3 text-slate-800 small fw-bold text-uppercase">Resource</th>
               <th className="py-3 text-slate-800 small fw-bold text-uppercase">Schedule</th>
+              <th className="py-3 text-slate-800 small fw-bold text-uppercase">Purpose</th>
+              <th className="py-3 text-slate-800 small fw-bold text-uppercase">Contact</th>
               <th className="py-3 text-slate-800 small fw-bold text-uppercase">Status</th>
               <th className="pe-4 py-3 text-slate-800 small fw-bold text-uppercase text-end">Actions</th>
             </tr>
@@ -67,6 +69,14 @@ const AdminBookingTable = ({ bookings, onApprove, onReject }) => {
                     </div>
                     <div className="text-slate-500 x-small ps-4">{booking.timeRange}</div>
                   </div>
+                </td>
+                <td>
+                  <div className="text-slate-700 small text-truncate" style={{ maxWidth: '150px' }} title={booking.purpose}>
+                    {booking.purpose}
+                  </div>
+                </td>
+                <td className="text-slate-700 small fw-medium">
+                  {booking.phoneNumber}
                 </td>
                 <td>
                   <span className={`${getStatusBadge(booking.status)} px-3 py-1 fw-bold rounded-pill`} style={{ fontSize: '0.65rem' }}>
