@@ -29,6 +29,8 @@ const QuickActions = () => {
       navigate('/dashboard/user/book-assets');
     } else if (label === 'Manage My Bookings') {
       navigate('/dashboard/user/bookings');
+    } else if (label === 'Report New Incident') {
+      navigate('/dashboard/user/report-incident');
     }
   };
 

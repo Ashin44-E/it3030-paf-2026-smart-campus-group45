@@ -17,6 +17,8 @@ import DashboardRedirect from './components/DashboardRedirect';
 import BookAssets from './pages/BookAssets';
 import MyBookings from './pages/MyBookings';
 import TechnicianBookings from './pages/technician/TechnicianBookings';
+import ReportIncident from './pages/ReportIncident';
+import ManageTickets from './pages/ManageTickets';
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
             <Route path="/dashboard/user" element={<UserDashboard />} />
             <Route path="/dashboard/user/book-assets" element={<BookAssets />} />
             <Route path="/dashboard/user/bookings" element={<MyBookings />} />
+            <Route path="/dashboard/user/report-incident" element={<ReportIncident />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
@@ -44,6 +47,7 @@ function App() {
             <Route path="/dashboard/admin/resources" element={<ManageResources />} />
             <Route path="/dashboard/admin/bookings" element={<ManageBookings />} />
             <Route path="/dashboard/admin/users" element={<ManageUsers />} />
+            <Route path="/dashboard/admin/tickets" element={<ManageTickets />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>
