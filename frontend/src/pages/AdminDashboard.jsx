@@ -40,7 +40,7 @@ const AdminDashboard = () => {
     try {
       const [resBookings, resTickets, resResources, resUsers, resNotifications] = await Promise.all([
         axiosInstance.get('/bookings').catch(() => ({ data: [] })),
-        axiosInstance.get('/tickets').catch(() => ({ data: [] })),
+        axiosInstance.get('/tickets/all').catch(() => ({ data: [] })),
         axiosInstance.get('/resources').catch(() => ({ data: [] })),
         axiosInstance.get('/users').catch(() => ({ data: [] })),
         axiosInstance.get('/notifications').catch(() => ({ data: [] }))

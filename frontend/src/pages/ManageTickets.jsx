@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BiFilter, BiSearch, BiUser, BiCheckCircle, 
+  BiFilter, BiSearch, BiUser, BiCheckCircle, BiErrorCircle,
   BiXCircle, BiRefresh, BiChevronRight, BiTime, 
   BiCommentDetail, BiMap, BiCategory 
 } from 'react-icons/bi';
