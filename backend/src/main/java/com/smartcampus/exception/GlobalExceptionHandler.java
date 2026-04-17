@@ -28,9 +28,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        if (ex.getMessage().equals("Email already exists")) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        String msg = ex.getMessage();
+        if (msg.equals("Email already exists") || 
+            msg.equals("Can't book at this time") || 
+            msg.contains("already under review")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
     }
 }

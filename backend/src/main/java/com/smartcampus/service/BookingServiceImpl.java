@@ -34,7 +34,11 @@ public class BookingServiceImpl implements BookingService {
 
         for (Booking existing : existingBookings) {
             if (isOverlapping(bookingDto.getTimeRange(), existing.getTimeRange())) {
-                throw new RuntimeException("Selected time slot overlaps with an existing booking.");
+                if (existing.getStatus() == BookingStatus.APPROVED) {
+                    throw new RuntimeException("Can't book at this time");
+                } else {
+                    throw new RuntimeException("A reservation request for this time is already under review.");
+                }
             }
         }
 

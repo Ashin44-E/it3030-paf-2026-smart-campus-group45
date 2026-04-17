@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
@@ -13,10 +14,12 @@ import Unauthorized from './pages/Unauthorized';
 import OAuth2Callback from './pages/OAuth2Callback';
 import DashboardRedirect from './components/DashboardRedirect';
 import BookAssets from './pages/BookAssets';
+import TechnicianBookings from './pages/technician/TechnicianBookings';
 
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" reverseOrder={false} />
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -41,6 +44,7 @@ function App() {
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>
             <Route path="/dashboard/technician" element={<TechnicianDashboard />} />
+            <Route path="/dashboard/technician/bookings" element={<TechnicianBookings />} />
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />

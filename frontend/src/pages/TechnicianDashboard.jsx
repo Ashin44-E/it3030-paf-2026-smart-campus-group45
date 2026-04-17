@@ -8,6 +8,7 @@ import TicketDetailsModal from '../components/technician-dashboard/TicketDetails
 import NotificationsPanel from '../components/technician-dashboard/NotificationsPanel';
 import WorkSummaryPanel from '../components/technician-dashboard/WorkSummaryPanel';
 import BookingApprovalPanel from '../components/admin-dashboard/BookingApprovalPanel';
+import BookingDetailsModal from '../components/technician-dashboard/BookingDetailsModal';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import toast from 'react-hot-toast';
@@ -16,7 +17,9 @@ const TechnicianDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   
   const [data, setData] = useState({
     stats: {
@@ -89,7 +92,7 @@ const TechnicianDashboard = () => {
       toast.success("Booking approved successfully");
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data || "Failed to approve booking");
+      toast.error(err.response?.data?.message || err.response?.data || "Failed to approve booking");
     }
   };
 
@@ -125,6 +128,11 @@ const TechnicianDashboard = () => {
   const openTicketDetails = (ticket) => {
     setSelectedTicket(ticket);
     setIsModalOpen(true);
+  };
+
+  const openBookingDetails = (booking) => {
+    setSelectedBooking(booking);
+    setIsBookingModalOpen(true);
   };
 
   return (
@@ -169,6 +177,7 @@ const TechnicianDashboard = () => {
                   bookings={data.bookings} 
                   onApprove={handleApproveBooking} 
                   onReject={handleRejectBooking} 
+                  onViewDetails={openBookingDetails}
                 />
               </div>
             </div>
@@ -189,6 +198,14 @@ const TechnicianDashboard = () => {
         ticket={selectedTicket}
         onUpdateStatus={handleUpdateStatus}
         onSaveNote={handleSaveResolution}
+      />
+
+      <BookingDetailsModal 
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        booking={selectedBooking}
+        onApprove={handleApproveBooking}
+        onReject={handleRejectBooking}
       />
 
       <style>{`
