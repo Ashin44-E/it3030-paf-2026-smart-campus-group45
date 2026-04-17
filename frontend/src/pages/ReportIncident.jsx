@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { BiErrorCircle, BiCloudUpload, BiMap, BiCategory, BiArrowBack, BiChevronRight } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const ReportIncident = () => {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [resources, setResources] = useState([]);
   const [formData, setFormData] = useState({
@@ -55,7 +57,15 @@ const ReportIncident = () => {
     files.forEach(file => data.append('files', file));
 
     try {
-      await axiosInstance.post('/tickets', data);
+      // Explicitly pass the Authorization header for multipart/form-data requests
+      // to ensure the JWT token is always included regardless of Axios interceptor state
+      const currentToken = token || localStorage.getItem('token');
+      await axiosInstance.post('/tickets', data, {
+        headers: {
+          'Authorization': `Bearer ${currentToken}`,
+          'Content-Type': 'multipart/form-data',
+        }
+      });
       toast.success("Incident reported successfully!");
       navigate('/dashboard/user');
     } catch (err) {
