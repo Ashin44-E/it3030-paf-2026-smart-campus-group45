@@ -56,6 +56,8 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject, onViewDetail
               <th className="fw-bold text-slate-800 text-uppercase ls-wide ps-3" style={{ fontSize: '0.65rem' }}>User</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Resource</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide text-center" style={{ fontSize: '0.65rem' }}>Date & Time</th>
+              <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Purpose</th>
+              <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Contact</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Status</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide text-end pe-3" style={{ fontSize: '0.65rem' }}>Actions</th>
             </tr>
@@ -78,6 +80,12 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject, onViewDetail
                   <div className="text-slate-900">{booking.date}</div>
                   <div className="text-slate-500 small" style={{ fontSize: '0.75rem' }}>{booking.timeRange}</div>
                 </td>
+                <td>
+                  <div className="text-slate-700 small text-truncate" style={{ maxWidth: '120px' }} title={booking.purpose}>
+                    {booking.purpose}
+                  </div>
+                </td>
+                <td className="text-slate-700 small">{booking.phoneNumber}</td>
                 <td>
                   <span className={getStatusBadge(booking.status)}>
                     {booking.status}

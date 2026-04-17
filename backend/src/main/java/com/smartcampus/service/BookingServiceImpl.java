@@ -49,6 +49,8 @@ public class BookingServiceImpl implements BookingService {
                 .resourceName(bookingDto.getResourceName())
                 .date(bookingDto.getDate())
                 .timeRange(bookingDto.getTimeRange())
+                .purpose(bookingDto.getPurpose())
+                .phoneNumber(bookingDto.getPhoneNumber())
                 .status(BookingStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();

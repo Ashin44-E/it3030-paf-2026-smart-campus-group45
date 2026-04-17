@@ -190,6 +190,26 @@ const BookingDetailsModal = ({ isOpen, onClose, booking, onApprove, onReject }) 
                   </div>
                 </div>
 
+                <div className="d-flex gap-3">
+                  <div className="p-2 rounded-3 bg-light text-slate-500">
+                    <BiInfoCircle size={20} />
+                  </div>
+                  <div>
+                    <p className="small text-slate-500 mb-0 ls-sm">PURPOSE OF RESERVATION</p>
+                    <p className="text-slate-800 mb-0" style={{ fontSize: '0.85rem' }}>{booking.purpose}</p>
+                  </div>
+                </div>
+
+                <div className="d-flex gap-3">
+                  <div className="p-2 rounded-3 bg-light text-slate-500">
+                    <BiInfoCircle size={20} />
+                  </div>
+                  <div>
+                    <p className="small text-slate-500 mb-0 ls-sm">CONTACT NUMBER</p>
+                    <p className="fw-bold text-slate-900 mb-0">{booking.phoneNumber}</p>
+                  </div>
+                </div>
+
                 {booking.reason && (
                   <div className="p-3 rounded-3 bg-danger bg-opacity-5 border border-danger border-opacity-10">
                     <p className="small text-danger fw-bold mb-1 d-flex align-items-center gap-1">
