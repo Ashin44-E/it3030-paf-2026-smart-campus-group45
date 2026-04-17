@@ -70,7 +70,7 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
                       <div className="p-1 rounded bg-warning bg-opacity-10 text-warning">
                         <BiUser />
                       </div>
-                      <span>{ticket.reportedBy}</span>
+                      <span>{ticket.reporterName || ticket.reportedBy}</span>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -83,6 +83,24 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
                     </div>
                   </div>
                 </div>
+
+                {ticket.attachmentUrls && ticket.attachmentUrls.length > 0 && (
+                  <section className="mb-5">
+                    <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-3 tracking-wider">Attachments</h3>
+                    <div className="d-flex gap-3 flex-wrap">
+                      {ticket.attachmentUrls.map((url, i) => (
+                        <a key={i} href={`http://localhost:8080${url}`} target="_blank" rel="noopener noreferrer">
+                          <img 
+                            src={`http://localhost:8080${url}`} 
+                            alt={`Attachment ${i+1}`} 
+                            className="rounded-3 shadow-sm border border-light"
+                            style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                          />
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                )}
 
                 <hr className="border-light my-5" />
 

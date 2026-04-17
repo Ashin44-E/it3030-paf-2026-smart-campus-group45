@@ -37,7 +37,7 @@ const TechnicianDashboard = () => {
   const fetchData = async () => {
     try {
       const [resTickets, resNotifs, resBookings] = await Promise.all([
-        axiosInstance.get('/tickets/assigned').catch(() => ({ data: [] })),
+        axiosInstance.get('/tickets/assigned'),
         axiosInstance.get('/notifications').catch(() => ({ data: [] })),
         axiosInstance.get('/bookings').catch(() => ({ data: [] }))
       ]);
@@ -108,21 +108,29 @@ const TechnicianDashboard = () => {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      // Real API: await axiosInstance.patch(`/tickets/${id}/status`, { status: newStatus });
-      setData(prev => ({
-        ...prev,
-        tickets: prev.tickets.map(t => t.id === id ? { ...t, status: newStatus } : t)
-      }));
+      await axiosInstance.patch(`/tickets/${id}/status`, { status: newStatus });
+      toast.success(`Ticket status updated to ${newStatus}`);
+      fetchData();
       if (selectedTicket && selectedTicket.id === id) {
         setSelectedTicket({ ...selectedTicket, status: newStatus });
       }
     } catch (err) {
-      console.error(err);
+      toast.error("Failed to update status");
     }
   };
 
   const handleSaveResolution = async (id, resolution) => {
-     console.log("Saving resolution for", id, resolution);
+    try {
+      await axiosInstance.patch(`/tickets/${id}/status`, { 
+        status: 'RESOLVED',
+        notes: resolution 
+      });
+      toast.success("Resolution saved and ticket resolved");
+      fetchData();
+      setIsModalOpen(false);
+    } catch (err) {
+      toast.error("Failed to save resolution");
+    }
   };
 
   const openTicketDetails = (ticket) => {
