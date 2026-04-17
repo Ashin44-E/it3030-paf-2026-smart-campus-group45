@@ -12,6 +12,7 @@ import AddResourceForm from '../components/admin-dashboard/AddResourceForm';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 import AdminLayout from '../components/admin-dashboard/AdminLayout';
 
@@ -35,83 +36,98 @@ const AdminDashboard = () => {
     activities: []
   });
 
+  const fetchData = async () => {
+    try {
+      const [resBookings, resTickets, resResources, resUsers, resNotifications] = await Promise.all([
+        axiosInstance.get('/bookings').catch(() => ({ data: [] })),
+        axiosInstance.get('/tickets').catch(() => ({ data: [] })),
+        axiosInstance.get('/resources').catch(() => ({ data: [] })),
+        axiosInstance.get('/users').catch(() => ({ data: [] })),
+        axiosInstance.get('/notifications').catch(() => ({ data: [] }))
+      ]);
+
+      // Mock data for demonstration if APIs are empty
+      const mockBookings = resBookings.data.length ? resBookings.data : [
+        { id: '1', userName: 'Alice Johnson', resourceName: 'Main Lab', date: '2026-04-20', timeRange: '09:00 - 11:00 AM', status: 'PENDING' },
+        { id: '2', userName: 'Bob Smith', resourceName: 'Conference Room 2', date: '2026-04-21', timeRange: '02:00 - 04:00 PM', status: 'PENDING' }
+      ];
+
+      const mockTickets = resTickets.data.length ? resTickets.data : [
+        { id: '1', title: 'Server Down', category: 'IT', priority: 'HIGH', status: 'OPEN', reportedBy: 'System Monitor', assignedTechnician: null },
+        { id: '2', title: 'Broken Chair', category: 'Furniture', priority: 'LOW', status: 'IN_PROGRESS', reportedBy: 'Charlie Brown', assignedTechnician: 'Jack Repair' }
+      ];
+
+      const mockResources = resResources.data.length ? resResources.data : [
+        { id: '1', name: 'Science Hall A', type: 'Lecture Hall', location: 'Section B', capacity: 300, status: 'AVAILABLE' },
+        { id: '2', name: 'Digital Library 1', type: 'Lab', location: 'Library 3F', capacity: 50, status: 'MAINTENANCE' }
+      ];
+
+      const mockUsers = resUsers.data.length ? resUsers.data : [
+        { id: '1', name: 'John Admin', email: 'admin@campus.com', role: 'ADMIN', provider: 'LOCAL' },
+        { id: '2', name: 'Jane Tech', email: 'jane@campus.com', role: 'TECHNICIAN', provider: 'GOOGLE' },
+        { id: '3', name: 'Student Lee', email: 'lee@campus.com', role: 'USER', provider: 'LOCAL' }
+      ];
+
+      const mockNotifs = resNotifications.data.length ? resNotifications.data : [
+        { id: 1, type: 'BOOKING', message: 'New booking request for Auditorium', timestamp: '2 mins ago', read: false },
+        { id: 2, type: 'TICKET', message: 'High priority ticket #432 escalated', timestamp: '1 hour ago', read: false }
+      ];
+
+      const mockActivities = [
+        { id: 1, type: 'BOOKING_APPROVED', message: 'Auditorium Booking #124 Approved', timestamp: '5 mins ago', user: 'Admin John' },
+        { id: 2, type: 'RESOURCE_UPDATED', message: 'Lab #3 marked for maintenance', timestamp: '20 mins ago', user: 'Admin John' },
+        { id: 3, type: 'USER_REGISTERED', message: 'New user "Student Lee" joined', timestamp: '1 hour ago', user: 'System' }
+      ];
+
+      setData({
+        stats: {
+          totalResources: mockResources.length,
+          activeResources: mockResources.filter(r => r.status === 'AVAILABLE').length,
+          pendingBookings: mockBookings.filter(b => b.status === 'PENDING').length,
+          openTickets: mockTickets.filter(t => t.status === 'OPEN').length,
+          totalUsers: mockUsers.length,
+          unreadNotifications: mockNotifs.filter(n => !n.read).length
+        },
+        bookings: mockBookings,
+        tickets: mockTickets,
+        resources: mockResources,
+        users: mockUsers,
+        notifications: mockNotifs,
+        activities: mockActivities
+      });
+    } catch (err) {
+      console.error("Dashboard fetch error", err);
+      toast.error("Failed to refresh dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const [resBookings, resTickets, resResources, resUsers, resNotifications] = await Promise.all([
-          axiosInstance.get('/bookings').catch(() => ({ data: [] })),
-          axiosInstance.get('/tickets').catch(() => ({ data: [] })),
-          axiosInstance.get('/resources').catch(() => ({ data: [] })),
-          axiosInstance.get('/users').catch(() => ({ data: [] })),
-          axiosInstance.get('/notifications').catch(() => ({ data: [] }))
-        ]);
-
-        // Mock data for demonstration if APIs are empty
-        const mockBookings = resBookings.data.length ? resBookings.data : [
-          { id: '1', userName: 'Alice Johnson', resourceName: 'Main Lab', date: '2026-04-20', timeRange: '09:00 - 11:00 AM', status: 'PENDING' },
-          { id: '2', userName: 'Bob Smith', resourceName: 'Conference Room 2', date: '2026-04-21', timeRange: '02:00 - 04:00 PM', status: 'PENDING' }
-        ];
-
-        const mockTickets = resTickets.data.length ? resTickets.data : [
-          { id: '1', title: 'Server Down', category: 'IT', priority: 'HIGH', status: 'OPEN', reportedBy: 'System Monitor', assignedTechnician: null },
-          { id: '2', title: 'Broken Chair', category: 'Furniture', priority: 'LOW', status: 'IN_PROGRESS', reportedBy: 'Charlie Brown', assignedTechnician: 'Jack Repair' }
-        ];
-
-        const mockResources = resResources.data.length ? resResources.data : [
-          { id: '1', name: 'Science Hall A', type: 'Lecture Hall', location: 'Section B', capacity: 300, status: 'AVAILABLE' },
-          { id: '2', name: 'Digital Library 1', type: 'Lab', location: 'Library 3F', capacity: 50, status: 'MAINTENANCE' }
-        ];
-
-        const mockUsers = resUsers.data.length ? resUsers.data : [
-          { id: '1', name: 'John Admin', email: 'admin@campus.com', role: 'ADMIN', provider: 'LOCAL' },
-          { id: '2', name: 'Jane Tech', email: 'jane@campus.com', role: 'TECHNICIAN', provider: 'GOOGLE' },
-          { id: '3', name: 'Student Lee', email: 'lee@campus.com', role: 'USER', provider: 'LOCAL' }
-        ];
-
-        const mockNotifs = resNotifications.data.length ? resNotifications.data : [
-          { id: 1, type: 'BOOKING', message: 'New booking request for Auditorium', timestamp: '2 mins ago', read: false },
-          { id: 2, type: 'TICKET', message: 'High priority ticket #432 escalated', timestamp: '1 hour ago', read: false }
-        ];
-
-        const mockActivities = [
-          { id: 1, type: 'BOOKING_APPROVED', message: 'Auditorium Booking #124 Approved', timestamp: '5 mins ago', user: 'Admin John' },
-          { id: 2, type: 'RESOURCE_UPDATED', message: 'Lab #3 marked for maintenance', timestamp: '20 mins ago', user: 'Admin John' },
-          { id: 3, type: 'USER_REGISTERED', message: 'New user "Student Lee" joined', timestamp: '1 hour ago', user: 'System' }
-        ];
-
-        setData({
-          stats: {
-            totalResources: mockResources.length,
-            activeResources: mockResources.filter(r => r.status === 'AVAILABLE').length,
-            pendingBookings: mockBookings.filter(b => b.status === 'PENDING').length,
-            openTickets: mockTickets.filter(t => t.status === 'OPEN').length,
-            totalUsers: mockUsers.length,
-            unreadNotifications: mockNotifs.filter(n => !n.read).length
-          },
-          bookings: mockBookings,
-          tickets: mockTickets,
-          resources: mockResources,
-          users: mockUsers,
-          notifications: mockNotifs,
-          activities: mockActivities
-        });
-      } catch (err) {
-        console.error("Dashboard fetch error", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdminData();
+    fetchData();
   }, []);
 
-  const handleApproveBooking = (id) => {
-    console.log("Approving booking:", id);
+  const handleApproveBooking = async (id) => {
+    try {
+      await axiosInstance.patch(`/bookings/${id}/status?status=APPROVED`);
+      toast.success("Booking approved successfully");
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data || "Failed to approve booking");
+    }
   };
 
-  const handleRejectBooking = (id, reason) => {
-    console.log("Rejecting booking:", id, "Reason:", reason);
+  const handleRejectBooking = async (id, reason) => {
+    try {
+      await axiosInstance.patch(`/bookings/${id}/status?status=REJECTED&reason=${encodeURIComponent(reason)}`);
+      toast.success("Booking rejected");
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data || "Failed to reject booking");
+    }
   };
+
+
 
   return (
     <AdminLayout>
