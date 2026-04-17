@@ -32,12 +32,12 @@ const AdminSidebar = () => {
     <motion.div 
       initial={{ x: -280 }}
       animate={{ x: 0 }}
-      className="bg-dark bg-opacity-75 vh-100 position-fixed start-0 top-0 border-end border-white border-opacity-10 d-none d-lg-flex flex-column"
-      style={{ width: '280px', zIndex: 1000, backdropFilter: 'blur(30px)' }}
+      className="bg-white vh-100 position-fixed start-0 top-0 border-end border-light d-none d-lg-flex flex-column shadow-sm"
+      style={{ width: '280px', zIndex: 1000 }}
     >
-      <div className="p-4 mb-3 border-bottom border-white border-opacity-5">
+      <div className="p-4 mb-3 border-bottom border-light">
         <h3 className="h5 fw-bold gradient-text mb-0">Admin Central</h3>
-        <p className="small text-secondary mb-0">Smart Campus Hub</p>
+        <p className="small text-muted mb-0">Smart Campus Operations Hub</p>
       </div>
 
       <nav className="flex-grow-1 px-3 mt-3 overflow-auto">
@@ -47,29 +47,31 @@ const AdminSidebar = () => {
             to={item.path}
             className={({ isActive }) => 
               `nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all ${
-                isActive ? 'bg-primary text-white shadow-sm' : 'text-secondary hover-bg-white-10'
+                isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover-bg-light'
               }`
             }
           >
-            {item.icon}
-            <span className="small fw-medium">{item.name}</span>
+            <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+            <span className="small fw-semibold">{item.name}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="p-3 border-top border-white border-opacity-10">
+      <div className="p-3 border-top border-light">
         <button
           onClick={logout}
-          className="btn btn-link nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 w-100 text-danger border-0 text-start text-decoration-none hover-bg-danger-10"
+          className="btn btn-link nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 w-100 text-danger border-0 text-start text-decoration-none hover-bg-danger-light"
         >
           <BiLogOut />
-          <span className="small fw-medium">Logout</span>
+          <span className="small fw-semibold">Logout</span>
         </button>
       </div>
 
       <style>{`
-        .hover-bg-white-10:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .hover-bg-danger-10:hover { background-color: rgba(220, 53, 69, 0.1); }
+        .text-slate-600 { color: #475569; }
+        .hover-bg-light:hover { background-color: #f1f5f9; color: #1e293b; }
+        .hover-bg-danger-light:hover { background-color: #fef2f2; }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
       `}</style>
     </motion.div>
   );

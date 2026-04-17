@@ -7,44 +7,44 @@ const TechnicianTopbar = ({ notificationCount = 0 }) => {
 
   return (
     <div 
-      className="bg-dark bg-opacity-50 border-bottom border-white border-opacity-10 py-2 px-4 position-sticky top-0" 
-      style={{ zIndex: 999, backdropFilter: 'blur(30px)' }}
+      className="bg-white border-bottom border-light py-2 px-4 position-sticky top-0 shadow-sm" 
+      style={{ zIndex: 999 }}
     >
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-lg-none">
-          <h3 className="h5 fw-bold gradient-text mb-0">TechHub</h3>
+          <h3 className="h5 fw-bold text-slate-900 mb-0">Tech<span className="text-primary">Console</span></h3>
         </div>
         
         <div className="ms-auto d-flex align-items-center gap-4">
-          <div className="position-relative cursor-pointer hover-opacity-75">
-            <BiBell size={22} className="text-secondary" />
+          <div className="position-relative cursor-pointer hover-opacity-75 p-2 rounded-circle hover-bg-light transition-all">
+            <BiBell size={22} className="text-slate-500" />
             {notificationCount > 0 && (
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '0.6rem' }}>
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style={{ fontSize: '0.6rem' }}>
                 {notificationCount}
               </span>
             )}
           </div>
 
-          <div className="d-flex align-items-center gap-3 border-start border-white border-opacity-10 ps-4">
+          <div className="d-flex align-items-center gap-3 border-start border-light ps-4">
             <div className="text-end d-none d-sm-block">
-              <p className="small fw-semibold mb-0 text-white">{user}</p>
-              <span className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 py-1 px-2" style={{ fontSize: '0.65rem' }}>
+              <p className="small fw-bold mb-0 text-slate-900">{user}</p>
+              <span className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10 py-1 px-2 fw-bold" style={{ fontSize: '0.65rem' }}>
                 {role}
               </span>
             </div>
             <div className="dropdown">
               <div 
-                className="cursor-pointer" 
+                className="cursor-pointer p-1 rounded-circle border border-light shadow-sm" 
                 data-bs-toggle="dropdown" 
                 aria-expanded="false"
               >
-                <BiUserCircle size={36} className="text-secondary" />
+                <BiUserCircle size={32} className="text-slate-400" />
               </div>
-              <ul className="dropdown-menu dropdown-menu-end shadow-lg border-white border-opacity-10 bg-dark bg-opacity-100 p-2 mt-2">
+              <ul className="dropdown-menu dropdown-menu-end shadow-2xl border-light bg-white p-2 mt-2">
                 <li>
-                  <button className="dropdown-item rounded-2 text-white small py-2 d-flex align-items-center gap-2" onClick={() => logout()}>
+                  <button className="dropdown-item rounded-2 text-slate-700 small py-2 d-flex align-items-center gap-2 fw-medium" onClick={() => logout()}>
                     <BiLogOut />
-                    Logout
+                    Sign Out
                   </button>
                 </li>
               </ul>
@@ -53,7 +53,13 @@ const TechnicianTopbar = ({ notificationCount = 0 }) => {
         </div>
       </div>
       <style>{`
-        .hover-opacity-75:hover { opacity: 0.75; }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-400 { color: #94a3b8; }
+        .border-light { border-color: #f1f5f9 !important; }
+        .hover-bg-light:hover { background-color: #f8fafc; }
+        .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
         .cursor-pointer { cursor: pointer; }
       `}</style>
     </div>

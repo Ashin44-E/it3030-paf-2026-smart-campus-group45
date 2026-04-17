@@ -11,21 +11,21 @@ import { motion } from 'framer-motion';
 
 const AdminStatsCard = ({ title, value, icon, color, delay }) => (
   <motion.div
-    initial={{ opacity: 0, scale: 0.8 }}
+    initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ delay, duration: 0.3 }}
-    whileHover={{ y: -8, transition: { duration: 0.2 } }}
+    transition={{ delay, duration: 0.4 }}
+    whileHover={{ y: -5, transition: { duration: 0.2 } }}
     className="col-12 col-md-4 col-xl-2"
   >
-    <div className="glass-card p-3 h-100 shadow-sm border border-white border-opacity-10 d-flex flex-column justify-content-between">
+    <div className="glass-card p-3 h-100 shadow-sm border border-white bg-white bg-opacity-80 d-flex flex-column justify-content-between">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className={`p-2 rounded-3 bg-${color} bg-opacity-10`}>
+        <div className={`p-2 rounded-3 bg-${color} bg-opacity-10 shadow-sm`}>
           {React.cloneElement(icon, { size: 20, className: `text-${color}` })}
         </div>
       </div>
       <div>
-        <p className="small text-secondary fw-medium mb-1 line-clamp-1">{title}</p>
-        <h4 className="fw-bold mb-0 text-white">{value}</h4>
+        <p className="small text-slate-500 fw-bold text-uppercase mb-1 line-clamp-1 ls-wide" style={{ fontSize: '0.65rem' }}>{title}</p>
+        <h4 className="fw-bold mb-0 text-slate-900">{value}</h4>
       </div>
     </div>
   </motion.div>
@@ -47,6 +47,9 @@ const AdminStatsCards = ({ stats }) => {
         <AdminStatsCard key={index} {...card} />
       ))}
       <style>{`
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-500 { color: #64748b; }
+        .ls-wide { letter-spacing: 0.05em; }
         .line-clamp-1 {
           display: -webkit-box;
           -webkit-line-clamp: 1;

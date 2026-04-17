@@ -17,25 +17,27 @@ const UserManagementPanel = ({ users = [], onChangeRole }) => {
   };
 
   return (
-    <div className="glass-card p-4 border border-white border-opacity-10 h-100 shadow-lg">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="h6 fw-bold mb-0 d-flex align-items-center gap-2 text-white">
-          <BiGroup size={18} className="text-secondary" />
+    <div className="glass-card p-4 border border-white h-100 shadow-sm">
+      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+        <h3 className="h6 fw-bold mb-0 d-flex align-items-center gap-2 text-slate-900">
+          <div className="p-1 rounded bg-info bg-opacity-10 text-info">
+            <BiGroup size={18} />
+          </div>
           System User Directory
         </h3>
         <div className="input-group input-group-sm w-auto">
-          <input type="text" className="form-control bg-dark bg-opacity-25 border-white border-opacity-10 text-white small" placeholder="Filter users..." style={{ fontSize: '0.75rem' }} />
+          <input type="text" className="form-control bg-light border-light text-slate-800 small px-3 shadow-none" placeholder="Filter users..." style={{ fontSize: '0.75rem' }} />
         </div>
       </div>
 
       <div className="table-responsive">
-        <table className="table table-dark table-hover table-borderless align-middle mb-0">
-          <thead className="text-secondary small text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: '0.05em' }}>
+        <table className="table table-hover table-borderless align-middle mb-0">
+          <thead className="bg-light border-bottom border-light text-slate-800 small text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: '0.05em' }}>
             <tr>
-              <th className="fw-medium">User Profile</th>
-              <th className="fw-medium text-center">Status</th>
-              <th className="fw-medium">Role</th>
-              <th className="fw-medium text-end">Action</th>
+              <th className="fw-bold ps-3">User Profile</th>
+              <th className="fw-bold text-center">Status</th>
+              <th className="fw-bold">Role</th>
+              <th className="fw-bold text-end pe-3">Action</th>
             </tr>
           </thead>
           <tbody style={{ fontSize: '0.85rem' }}>
@@ -45,47 +47,49 @@ const UserManagementPanel = ({ users = [], onChangeRole }) => {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * index }}
-                className="border-bottom border-white border-opacity-5"
+                className="border-bottom border-light hover-bg-light"
               >
-                <td>
+                <td className="ps-3">
                   <div className="d-flex align-items-center gap-3 py-2">
-                    <BiUserCircle size={32} className="text-secondary opacity-50" />
+                    <div className="p-2 rounded-circle bg-light border border-light">
+                      <BiUserCircle size={24} className="text-slate-400" />
+                    </div>
                     <div>
-                      <div className="fw-bold text-white d-flex align-items-center">
+                      <div className="fw-bold text-slate-900 d-flex align-items-center gap-1">
                         {user.name}
-                        {getProviderIcon(user.provider)}
+                        <span className="badge bg-light text-slate-400 border border-light fw-normal px-1" style={{ fontSize: '0.6rem' }}>{user.provider}</span>
                       </div>
-                      <div className="text-secondary small" style={{ fontSize: '0.7rem' }}>{user.email}</div>
+                      <div className="text-slate-500 small" style={{ fontSize: '0.7rem' }}>{user.email}</div>
                     </div>
                   </div>
                 </td>
                 <td className="text-center">
-                   <span className="p-1 rounded-circle bg-success d-inline-block" style={{ width: '8px', height: '8px' }} title="Active Account"></span>
+                   <span className="p-1 rounded-circle bg-success d-inline-block shadow-sm" style={{ width: '8px', height: '8px' }} title="Active Account"></span>
                 </td>
                 <td>
                   <span className={getRoleBadge(user.role)}>
                     {user.role}
                   </span>
                 </td>
-                <td className="text-end">
+                <td className="text-end pe-3">
                   <div className="dropdown position-static">
-                    <button className="btn btn-link text-secondary p-0" data-bs-toggle="dropdown">
+                    <button className="btn btn-white btn-icon-sm border-light text-slate-400 shadow-sm rounded-circle" data-bs-toggle="dropdown">
                       <BiDotsVerticalRounded size={20} />
                     </button>
-                    <ul className="dropdown-menu dropdown-menu-end shadow-lg border-white border-opacity-10 bg-dark bg-opacity-100 p-2 mt-2">
-                      <li className="dropdown-header text-uppercase small" style={{ fontSize: '0.65rem' }}>Change Role</li>
+                    <ul className="dropdown-menu dropdown-menu-end shadow-2xl border-light bg-white p-2 mt-2">
+                      <li className="dropdown-header text-uppercase text-slate-400 fw-bold pb-2" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Change Role</li>
                       <li>
-                        <button className="dropdown-item rounded-2 text-white small py-2 d-flex align-items-center gap-2" onClick={() => onChangeRole(user.id, 'USER')}>
+                        <button className="dropdown-item rounded-2 text-slate-700 small py-2 d-flex align-items-center gap-2 fw-medium" onClick={() => onChangeRole(user.id, 'USER')}>
                           Set as Student/User
                         </button>
                       </li>
                       <li>
-                        <button className="dropdown-item rounded-2 text-warning small py-2 d-flex align-items-center gap-2" onClick={() => onChangeRole(user.id, 'TECHNICIAN')}>
+                        <button className="dropdown-item rounded-2 text-warning small py-2 d-flex align-items-center gap-2 fw-medium" onClick={() => onChangeRole(user.id, 'TECHNICIAN')}>
                           <BiWrench /> Promote to Technician
                         </button>
                       </li>
                       <li>
-                        <button className="dropdown-item rounded-2 text-danger small py-2 d-flex align-items-center gap-2" onClick={() => onChangeRole(user.id, 'ADMIN')}>
+                        <button className="dropdown-item rounded-2 text-danger small py-2 d-flex align-items-center gap-2 fw-bold" onClick={() => onChangeRole(user.id, 'ADMIN')}>
                           <BiShieldQuarter /> Grant Admin Rights
                         </button>
                       </li>
@@ -95,14 +99,28 @@ const UserManagementPanel = ({ users = [], onChangeRole }) => {
               </motion.tr>
             )) : (
               <tr>
-                <td colSpan="4" className="text-center py-5 text-secondary small">No user records found.</td>
+                <td colSpan="4" className="text-center py-5 text-slate-400 small italic">No user records found.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
       <style>{`
-        .dropdown-item:hover { background-color: rgba(255, 255, 255, 0.05) !important; color: #fff !important; }
+        .btn-white { background: #fff; }
+        .btn-icon-sm { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; padding: 0; }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-600 { color: #475569; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-400 { color: #94a3b8; }
+        .bg-light { background-color: #f8fafc !important; }
+        .border-light { border-color: #f1f5f9 !important; }
+        .ls-wide { letter-spacing: 0.05em; }
+        .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .hover-bg-light:hover { background-color: #f8fafc; }
+        .italic { font-style: italic; }
+        .dropdown-item:hover { background-color: #f1f5f9 !important; color: #0f172a !important; transition: all 0.2s; }
       `}</style>
     </div>
   );

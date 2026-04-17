@@ -112,7 +112,7 @@ const TechnicianDashboard = () => {
   };
 
   return (
-    <div className="d-flex bg-dark min-vh-100 overflow-hidden">
+    <div className="d-flex bg-light min-vh-100 overflow-hidden">
       {/* Technician Sidebar */}
       <TechnicianSidebar />
 
@@ -125,17 +125,18 @@ const TechnicianDashboard = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 d-flex justify-content-between align-items-end"
+            className="mb-5 d-flex justify-content-between align-items-end border-bottom border-white pb-4"
           >
             <div>
-              <h2 className="display-6 fw-bold text-white mb-2">
-                Tech <span className="gradient-text">Workbench</span>
-              </h2>
-              <p className="text-secondary mb-0">Welcome back, {user}. Here are your tasks for today.</p>
+              <h1 className="h2 fw-bold text-slate-900 mb-2">
+                Technician <span className="text-primary">Console</span>
+              </h1>
+              <p className="text-slate-500 fw-medium">Smart Campus Infrastructure Management System</p>
             </div>
             <div className="text-end d-none d-md-block">
-              <span className="badge bg-dark border border-white border-opacity-10 text-success fw-medium px-3 py-2">
-                 Technician Online
+              <span className="badge bg-white border border-light text-success fw-bold px-3 py-2 shadow-sm rounded-pill d-flex align-items-center gap-2">
+                 <div className="p-1 rounded-circle bg-success shadow-sm" style={{ width: '8px', height: '8px' }}></div>
+                 System Operative: Online
               </span>
             </div>
           </motion.div>
@@ -172,11 +173,10 @@ const TechnicianDashboard = () => {
       />
 
       <style>{`
-        .gradient-text {
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-500 { color: #64748b; }
+        .border-light { border-color: #f1f5f9 !important; }
         @media (max-width: 991.98px) {
           .flex-grow-1 { margin-left: 0 !important; }
         }
