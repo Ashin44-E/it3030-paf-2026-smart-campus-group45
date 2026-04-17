@@ -90,8 +90,10 @@ const BookAssets = () => {
       setIsModalOpen(false);
       // Optional: Navigate to my bookings
     } catch (error) {
-      toast.error("Failed to submit booking request");
+      const errorMsg = error.response?.data?.message || error.response?.data || "Failed to submit booking request";
+      toast.error(errorMsg);
     } finally {
+
       setSubmitting(false);
     }
   };

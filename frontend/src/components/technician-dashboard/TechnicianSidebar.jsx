@@ -8,7 +8,8 @@ import {
   BiChat, 
   BiBell, 
   BiUser, 
-  BiLogOut 
+  BiLogOut,
+  BiCalendarCheck
 } from 'react-icons/bi';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +22,7 @@ const TechnicianSidebar = () => {
     { name: 'Assigned Tickets', icon: <BiTask />, path: '/dashboard/technician/assigned' },
     { name: 'In Progress', icon: <BiWrench />, path: '/dashboard/technician/in-progress' },
     { name: 'Resolved Tickets', icon: <BiCheckCircle />, path: '/dashboard/technician/resolved' },
-    { name: 'Comments', icon: <BiChat />, path: '/dashboard/technician/comments' },
+    { name: 'Booking Management', icon: <BiCalendarCheck />, path: '/dashboard/technician/bookings' },
     { name: 'Notifications', icon: <BiBell />, path: '/dashboard/technician/notifications' },
     { name: 'Profile', icon: <BiUser />, path: '/dashboard/technician/profile' },
   ];
