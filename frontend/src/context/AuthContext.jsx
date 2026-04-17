@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import axiosInstance from '../api/axiosInstance';
 
 const AuthContext = createContext();
 
@@ -53,8 +54,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
   };
 
+  const googleLogin = async (credential) => {
+    try {
+      const { data } = await axiosInstance.post('/auth/google-login', { credential });
+      login(data);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, role, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, role, loading, login, logout, googleLogin }}>
       {children}
     </AuthContext.Provider>
   );
