@@ -23,6 +23,7 @@ public class TicketServiceImpl implements TicketService {
     private final UserRepository userRepository;
     private final ResourceRepository resourceRepository;
     private final FileStorageService fileStorageService;
+    private final NotificationService notificationService;
 
     @Override
     public TicketResponseDto createTicket(TicketRequestDto request, String userEmail) {
@@ -49,7 +50,17 @@ public class TicketServiceImpl implements TicketService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        return mapToResponseDto(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Notify user of creation
+        notificationService.notify(
+                user.getEmail(),
+                "Incident Reported Successfully",
+                "Your ticket '" + ticket.getTitle() + "' has been submitted and is currently " + ticket.getStatus() + ".",
+                "TICKET_CREATED"
+        );
+
+        return mapToResponseDto(savedTicket);
     }
 
     @Override
@@ -95,7 +106,18 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setAssignedTo(technicianId);
         ticket.setUpdatedAt(LocalDateTime.now());
-        return mapToResponseDto(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Notify the assigned technician
+        User technician = userRepository.findById(technicianId).get();
+        notificationService.notify(
+                technician.getEmail(),
+                "New Ticket Assigned",
+                "You have been assigned to ticket: '" + ticket.getTitle() + "'. Priority: " + ticket.getPriority(),
+                "TICKET_ASSIGNED"
+        );
+
+        return mapToResponseDto(savedTicket);
     }
 
     @Override
@@ -122,7 +144,19 @@ public class TicketServiceImpl implements TicketService {
                 .build();
         commentRepository.save(comment);
 
-        return mapToResponseDto(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Notify the user who reported the ticket
+        userRepository.findById(ticket.getReportedBy()).ifPresent(reporter -> {
+            notificationService.notify(
+                    reporter.getEmail(),
+                    "Ticket Status Updated",
+                    "Your ticket '" + ticket.getTitle() + "' is now " + status + ".",
+                    "TICKET_UPDATED"
+            );
+        });
+
+        return mapToResponseDto(savedTicket);
     }
 
     @Override
@@ -133,7 +167,18 @@ public class TicketServiceImpl implements TicketService {
         ticket.setStatus(TicketStatus.REJECTED);
         ticket.setRejectionReason(reason);
         ticket.setUpdatedAt(LocalDateTime.now());
-        return mapToResponseDto(ticketRepository.save(ticket));
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        userRepository.findById(ticket.getReportedBy()).ifPresent(reporter -> {
+            notificationService.notify(
+                    reporter.getEmail(),
+                    "Ticket Rejected",
+                    "Your ticket '" + ticket.getTitle() + "' was rejected. Reason: " + reason,
+                    "TICKET_UPDATED"
+            );
+        });
+
+        return mapToResponseDto(savedTicket);
     }
 
     @Override

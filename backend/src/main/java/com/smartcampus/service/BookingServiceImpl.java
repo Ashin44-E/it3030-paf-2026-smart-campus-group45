@@ -18,6 +18,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     public Booking createBooking(BookingDto bookingDto, String userEmail) {
@@ -54,7 +55,33 @@ public class BookingServiceImpl implements BookingService {
                 .status(BookingStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // 1. Notify user
+        notificationService.notify(
+                userEmail,
+                "Booking Request Submitted",
+                "Your request for " + bookingDto.getResourceName() + " on " + bookingDto.getDate() + " is pending approval.",
+                "BOOKING_CREATED"
+        );
+
+        // 2. Notify all admins
+        notificationService.notifyAllByRole(
+                "ADMIN",
+                "New Booking Request",
+                user.getName() + " requested " + bookingDto.getResourceName() + " for " + bookingDto.getDate(),
+                "BOOKING_CREATED"
+        );
+
+        // 3. Notify all technicians
+        notificationService.notifyAllByRole(
+                "TECHNICIAN",
+                "New Booking Request",
+                user.getName() + " requested " + bookingDto.getResourceName() + " for " + bookingDto.getDate(),
+                "BOOKING_CREATED"
+        );
+
+        return savedBooking;
     }
 
     private boolean isOverlapping(String newRange, String existingRange) {
@@ -96,6 +123,16 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setStatus(status);
         booking.setReason(reason);
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // Notify user of status change
+        notificationService.notify(
+                booking.getUserEmail(),
+                "Booking " + status,
+                "Your booking for " + booking.getResourceName() + " on " + booking.getDate() + " is now " + status + (reason != null ? ". Reason: " + reason : ""),
+                "BOOKING_UPDATED"
+        );
+
+        return savedBooking;
     }
 }
