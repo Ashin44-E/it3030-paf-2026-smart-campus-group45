@@ -75,7 +75,7 @@ const TicketManagementPanel = ({ tickets = [], onAssign, onStatusChange }) => {
             </div>
 
             <div className="d-flex justify-content-between align-items-center pt-2 border-top border-light">
-              <span className="text-slate-400 small" style={{ fontSize: '0.65rem' }}>{ticket.createdDate || 'Just now'}</span>
+              <span className="text-slate-400 small" style={{ fontSize: '0.65rem' }}>{ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Just now'}</span>
               <div className="d-flex gap-2">
                 <button className="btn btn-primary btn-sm rounded-pill px-3 py-1 btn-action-small shadow-sm" onClick={() => onAssign(ticket.id)}>
                   Assign

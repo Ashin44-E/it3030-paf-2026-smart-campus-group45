@@ -115,6 +115,7 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
                   </h2>
                   <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.82rem', margin: 0, fontWeight: 600 }}>
                     Ticket #{ticket.id?.toString().slice(-6) || ticket.id}
+                    {ticket.createdAt && ` • Reported on ${new Date(ticket.createdAt).toLocaleString()}`}
                   </p>
                 </div>
                 <button
@@ -161,7 +162,7 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
                       { label: 'Location', value: ticket.resourceName || ticket.location || 'Global Campus', icon: <BiMap />, color: '#6366f1', bg: '#ede9fe' },
                       { label: 'Category', value: ticket.category, icon: <BiTag />, color: '#0ea5e9', bg: '#e0f2fe' },
                       { label: 'Reported By', value: ticket.reporterName || ticket.reportedBy || 'Unknown', icon: <BiUser />, color: '#f59e0b', bg: '#fef3c7' },
-                      { label: 'Date Reported', value: ticket.reportedDate || ticket.createdDate || 'N/A', icon: <BiCalendar />, color: '#10b981', bg: '#d1fae5' },
+                      { label: 'Date Reported', value: ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'N/A', icon: <BiCalendar />, color: '#10b981', bg: '#d1fae5' },
                     ].map(item => (
                       <div key={item.label} className="col-6">
                         <div style={{ background: '#fff', border: '1.5px solid #e8eeff', borderRadius: '14px', padding: '14px', height: '100%' }}>
