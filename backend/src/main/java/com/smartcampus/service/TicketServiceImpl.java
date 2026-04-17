@@ -9,10 +9,8 @@ import com.smartcampus.repository.TicketRepository;
 import com.smartcampus.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +25,14 @@ public class TicketServiceImpl implements TicketService {
     private final FileStorageService fileStorageService;
 
     @Override
-    public TicketResponseDto createTicket(TicketRequestDto request, List<MultipartFile> files, String userEmail) {
+    public TicketResponseDto createTicket(TicketRequestDto request, String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<String> attachmentUrls = (files == null) ? Collections.emptyList() :
-                files.stream().map(fileStorageService::save).collect(Collectors.toList());
+        // Attachment URLs come directly from the frontend (uploaded to Supabase)
+        List<String> attachmentUrls = (request.getAttachmentUrls() != null)
+                ? request.getAttachmentUrls()
+                : java.util.Collections.emptyList();
 
         Ticket ticket = Ticket.builder()
                 .title(request.getTitle())

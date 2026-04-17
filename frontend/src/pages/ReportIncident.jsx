@@ -4,12 +4,14 @@ import { BiErrorCircle, BiCloudUpload, BiMap, BiCategory, BiArrowBack, BiChevron
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
+import MediaUpload from '../utils/MediaUpload';
 import toast from 'react-hot-toast';
 
 const ReportIncident = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
   const [resources, setResources] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -43,7 +45,6 @@ const ReportIncident = () => {
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files).slice(0, 3);
     setFiles(selectedFiles);
-    
     const previews = selectedFiles.map(file => URL.createObjectURL(file));
     setFilePreviews(previews);
   };
@@ -52,22 +53,31 @@ const ReportIncident = () => {
     e.preventDefault();
     setLoading(true);
 
-    const data = new FormData();
-    data.append('ticket', JSON.stringify(formData));
-    files.forEach(file => data.append('files', file));
-
     try {
-      // Explicitly pass the Authorization header for multipart/form-data requests
-      // to ensure the JWT token is always included regardless of Axios interceptor state
+      // Step 1: Upload all selected images to Supabase
+      let attachmentUrls = [];
+      if (files.length > 0) {
+        setUploadProgress(`Uploading ${files.length} image(s) to cloud…`);
+        const uploadPromises = files.map(file => MediaUpload(file));
+        attachmentUrls = await Promise.all(uploadPromises);
+        setUploadProgress('');
+      }
+
+      // Step 2: POST JSON with Supabase URLs to backend
       const currentToken = token || localStorage.getItem('token');
-      await axiosInstance.post('/tickets', data, {
+      await axiosInstance.post('/tickets', {
+        ...formData,
+        attachmentUrls,
+      }, {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         }
       });
+
       toast.success("Incident reported successfully!");
       navigate('/dashboard/user');
+
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to submit report");
     } finally {

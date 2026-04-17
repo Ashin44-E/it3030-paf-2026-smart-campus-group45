@@ -4,12 +4,11 @@ import com.smartcampus.dto.TicketRequestDto;
 import com.smartcampus.dto.TicketResponseDto;
 import com.smartcampus.model.TicketComment;
 import com.smartcampus.model.TicketStatus;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface TicketService {
-    TicketResponseDto createTicket(TicketRequestDto request, List<MultipartFile> files, String userEmail);
+    TicketResponseDto createTicket(TicketRequestDto request, String userEmail);
     List<TicketResponseDto> getMyTickets(String userEmail);
     List<TicketResponseDto> getAllTickets();
     List<TicketResponseDto> getAssignedTickets(String technicianEmail);
