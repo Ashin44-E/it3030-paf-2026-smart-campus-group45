@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BiBell, BiLogOut, BiUserCircle } from 'react-icons/bi';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../hooks/useNotifications';
+import NotificationSlider from './NotificationSlider';
 
-const Topbar = ({ notificationCount = 0 }) => {
+const Topbar = () => {
   const { user, role, logout } = useAuth();
+  const { unreadCount } = useNotifications();
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   return (
     <div 
@@ -16,11 +20,14 @@ const Topbar = ({ notificationCount = 0 }) => {
         </div>
         
         <div className="ms-auto d-flex align-items-center gap-4">
-          <div className="position-relative cursor-pointer p-2 rounded-circle hover-bg-light transition-all">
+          <div 
+            className="position-relative cursor-pointer p-2 rounded-circle hover-bg-light transition-all"
+            onClick={() => setIsNotifOpen(true)}
+          >
             <BiBell size={22} className="text-slate-500" />
-            {notificationCount > 0 && (
+            {unreadCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style={{ fontSize: '0.6rem' }}>
-                {notificationCount}
+                {unreadCount}
               </span>
             )}
           </div>
@@ -62,6 +69,7 @@ const Topbar = ({ notificationCount = 0 }) => {
         .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
         .cursor-pointer { cursor: pointer; }
       `}</style>
+      <NotificationSlider isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} />
     </div>
   );
 };

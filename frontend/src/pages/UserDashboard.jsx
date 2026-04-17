@@ -5,7 +5,6 @@ import StatsCards from '../components/dashboard/StatsCards';
 import BookingList from '../components/dashboard/BookingList';
 import TicketList from '../components/dashboard/TicketList';
 import QuickActions from '../components/dashboard/QuickActions';
-import NotificationPanel from '../components/dashboard/NotificationPanel';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
@@ -76,7 +75,7 @@ const UserDashboard = () => {
 
       {/* Main Content Area */}
       <div className="flex-grow-1 d-flex flex-column" style={{ marginLeft: '260px' }}>
-        <Topbar notificationCount={data.stats.notifications} />
+        <Topbar />
 
         <main className="p-4 p-lg-5 overflow-auto">
           {/* Welcome Section */}
@@ -112,13 +111,6 @@ const UserDashboard = () => {
           </div>
         </main>
       </div>
-
-      {/* Slide-in Notifications Panel */}
-      <NotificationPanel 
-        notifications={data.notifications} 
-        isOpen={isNotifOpen} 
-        onClose={() => setIsNotifOpen(false)} 
-      />
 
       <style>{`
         .text-slate-900 { color: #0f172a; }
