@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { BiLogIn, BiEnvelope, BiLock, BiGlobe } from 'react-icons/bi';
+import { BiLogIn, BiEnvelope, BiLock } from 'react-icons/bi';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -32,10 +34,6 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
 
   return (
@@ -115,14 +113,30 @@ const Login = () => {
           </span>
         </div>
 
-        <button
-          onClick={handleGoogleLogin}
-          className="btn btn-white border-light btn-lg w-100 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2 mb-4 shadow-sm text-slate-700"
-          style={{ fontSize: '0.9rem' }}
-        >
-          <BiGlobe size={20} className="text-primary" />
-          Continue with Google Workspace
-        </button>
+        <div className="d-flex justify-content-center mb-4 pb-2" style={{ width: '100%' }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  setLoading(true);
+                  await googleLogin(credentialResponse.credential);
+                  toast.success('Successfully logged in with Google');
+                  navigate('/dashboard');
+                } catch (err) {
+                  toast.error('Google login failed. Please try again.');
+                  setLoading(false);
+                }
+              }}
+              onError={() => {
+                toast.error('Google login failed.');
+              }}
+              useOneTap
+              theme="outline"
+              size="large"
+              width="100%"
+            />
+          </div>
+        </div>
 
         <p className="text-center mb-0 text-slate-500 small fw-medium">
           New to the platform?{' '}
