@@ -11,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +23,12 @@ public class TicketController {
     private final TicketService ticketService;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(consumes = {"application/json"})
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<TicketResponseDto> createTicket(
-            @RequestParam("ticket") String ticketJson,
-            @RequestParam(value = "files", required = false) List<MultipartFile> files,
-            Authentication authentication) throws IOException {
-        
-        TicketRequestDto requestDto = objectMapper.readValue(ticketJson, TicketRequestDto.class);
-        return ResponseEntity.ok(ticketService.createTicket(requestDto, files, authentication.getName()));
+            @RequestBody TicketRequestDto requestDto,
+            Authentication authentication) {
+        return ResponseEntity.ok(ticketService.createTicket(requestDto, authentication.getName()));
     }
 
     @GetMapping("/my")

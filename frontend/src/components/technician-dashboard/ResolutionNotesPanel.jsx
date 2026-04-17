@@ -1,107 +1,216 @@
 import React, { useState } from 'react';
 import { BiCheckCircle, BiWrench, BiEditAlt } from 'react-icons/bi';
 
+// Format the resolution fields into a single readable string for storage
+const formatNotes = (data) => {
+  const parts = [];
+  if (data.summary)      parts.push(`Summary: ${data.summary}`);
+  if (data.actionsTaken) parts.push(`Actions Taken: ${data.actionsTaken}`);
+  if (data.partsUsed)    parts.push(`Parts / Replacements: ${data.partsUsed}`);
+  return parts.join('\n\n');
+};
+
 const ResolutionNotesPanel = ({ ticketId, currentStatus, onSave, onResolve }) => {
   const [resolutionData, setResolutionData] = useState({
     summary: '',
     actionsTaken: '',
     partsUsed: '',
-    completionNotes: ''
   });
   const [isEditing, setIsEditing] = useState(true);
 
-  const handleSubmit = (e) => {
+  const handleSaveProgress = (e) => {
     e.preventDefault();
-    onSave(ticketId, resolutionData);
+    const formattedNotes = formatNotes(resolutionData);
+    // Save notes while keeping the ticket in its current status (or update to IN_PROGRESS)
+    onSave(ticketId, formattedNotes, false);
     setIsEditing(false);
   };
 
+  const handleResolve = () => {
+    const formattedNotes = formatNotes(resolutionData);
+    // Save notes AND mark as resolved in one call
+    onSave(ticketId, formattedNotes, true);
+    setIsEditing(false);
+  };
+
+  const inputStyle = {
+    background: '#fff',
+    border: '1.5px solid #c7d2fe',
+    borderRadius: '10px',
+    color: '#1e3a8a',
+    fontSize: '0.88rem',
+    padding: '10px 14px',
+    width: '100%',
+    outline: 'none',
+    fontWeight: 500,
+    boxShadow: 'none',
+    transition: 'border-color 0.2s',
+  };
+
+  const labelStyle = {
+    fontSize: '0.6rem',
+    fontWeight: 800,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    color: '#6366f1',
+    marginBottom: '6px',
+    display: 'block',
+  };
+
   return (
-    <div className="glass-card p-4 bg-dark bg-opacity-25 border border-white border-opacity-5 rounded-4 shadow-sm">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="h6 fw-bold text-white mb-0 d-flex align-items-center gap-2">
-          <BiWrench className="text-secondary" /> Resolution Details
+    <div style={{
+      background: 'linear-gradient(135deg, #eff6ff 0%, #f0f4ff 100%)',
+      border: '1.5px solid #c7d2fe',
+      borderRadius: '16px',
+      padding: '20px',
+    }}>
+      {/* Section Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+        <h3 style={{ margin: 0, fontWeight: 800, fontSize: '0.9rem', color: '#3730a3', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ background: '#e0e7ff', color: '#4f46e5', borderRadius: '8px', padding: '4px 8px', fontSize: '1rem', display: 'flex' }}>
+            <BiWrench />
+          </span>
+          Resolution Details
         </h3>
         {!isEditing && (
-           <button className="btn btn-link text-primary btn-sm p-0" onClick={() => setIsEditing(true)}>
-            <BiEditAlt className="me-1" /> Edit Notes
-           </button>
+          <button
+            onClick={() => setIsEditing(true)}
+            style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: '50px', padding: '5px 14px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+          >
+            <BiEditAlt /> Edit
+          </button>
         )}
       </div>
 
       {isEditing ? (
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label text-secondary small uppercase tracking-wider">Resolution Summary</label>
-            <input 
-              type="text" 
-              className="form-control bg-dark text-white border-white border-opacity-10 shadow-none small"
+        <form onSubmit={handleSaveProgress}>
+          <div style={{ marginBottom: '14px' }}>
+            <label style={labelStyle}>Resolution Summary *</label>
+            <input
+              type="text"
+              style={inputStyle}
               placeholder="e.g., Repaired faulty wiring in the control box"
               required
               value={resolutionData.summary}
-              onChange={(e) => setResolutionData({...resolutionData, summary: e.target.value})}
+              onChange={(e) => setResolutionData({ ...resolutionData, summary: e.target.value })}
+              onFocus={(e) => e.target.style.borderColor = '#6366f1'}
+              onBlur={(e) => e.target.style.borderColor = '#c7d2fe'}
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label text-secondary small uppercase tracking-wider">Actions Taken</label>
-            <textarea 
-              className="form-control bg-dark text-white border-white border-opacity-10 shadow-none small"
+          <div style={{ marginBottom: '14px' }}>
+            <label style={labelStyle}>Actions Taken</label>
+            <textarea
+              style={{ ...inputStyle, resize: 'none' }}
               rows="3"
-              placeholder="Detail the steps performed..."
+              placeholder="Detail the steps performed to resolve this issue..."
               value={resolutionData.actionsTaken}
-              onChange={(e) => setResolutionData({...resolutionData, actionsTaken: e.target.value})}
-            ></textarea>
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label text-secondary small uppercase tracking-wider">Parts / Replacements (Optional)</label>
-            <input 
-              type="text" 
-              className="form-control bg-dark text-white border-white border-opacity-10 shadow-none small"
-              placeholder="List any parts used..."
-              value={resolutionData.partsUsed}
-              onChange={(e) => setResolutionData({...resolutionData, partsUsed: e.target.value})}
+              onChange={(e) => setResolutionData({ ...resolutionData, actionsTaken: e.target.value })}
+              onFocus={(e) => e.target.style.borderColor = '#6366f1'}
+              onBlur={(e) => e.target.style.borderColor = '#c7d2fe'}
             />
           </div>
 
-          <div className="d-flex gap-2 pt-3">
-            <button type="submit" className="btn btn-outline-primary btn-sm rounded-pill px-4">Save Progress</button>
-            {currentStatus === 'IN_PROGRESS' && (
-              <button 
-                type="button" 
-                className="btn btn-success btn-sm rounded-pill px-4 d-flex align-items-center gap-2"
-                onClick={onResolve}
-                disabled={!resolutionData.summary.trim()}
-              >
-                <BiCheckCircle /> Mark as Resolved
-              </button>
-            )}
+          <div style={{ marginBottom: '18px' }}>
+            <label style={labelStyle}>Parts / Replacements Used (Optional)</label>
+            <input
+              type="text"
+              style={inputStyle}
+              placeholder="List any parts or equipment used..."
+              value={resolutionData.partsUsed}
+              onChange={(e) => setResolutionData({ ...resolutionData, partsUsed: e.target.value })}
+              onFocus={(e) => e.target.style.borderColor = '#6366f1'}
+              onBlur={(e) => e.target.style.borderColor = '#c7d2fe'}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="submit"
+              style={{
+                background: '#fff',
+                border: '1.5px solid #6366f1',
+                color: '#4f46e5',
+                borderRadius: '50px',
+                padding: '8px 22px',
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+              }}
+            >
+              Save Notes
+            </button>
+            <button
+              type="button"
+              disabled={!resolutionData.summary.trim()}
+              onClick={handleResolve}
+              style={{
+                background: resolutionData.summary.trim()
+                  ? 'linear-gradient(135deg, #10b981, #059669)'
+                  : '#d1fae5',
+                color: resolutionData.summary.trim() ? '#fff' : '#6ee7b7',
+                border: 'none',
+                borderRadius: '50px',
+                padding: '8px 22px',
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                cursor: resolutionData.summary.trim() ? 'pointer' : 'not-allowed',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: resolutionData.summary.trim() ? '0 4px 12px rgba(16,185,129,0.3)' : 'none',
+              }}
+            >
+              <BiCheckCircle size={16} /> Mark as Resolved
+            </button>
           </div>
         </form>
       ) : (
-        <div className="text-white small">
-          <p className="mb-2"><span className="text-secondary">Summary:</span> {resolutionData.summary}</p>
-          <p className="mb-2"><span className="text-secondary">Actions:</span> {resolutionData.actionsTaken || 'Not specified'}</p>
-          {resolutionData.partsUsed && <p className="mb-0"><span className="text-secondary">Parts:</span> {resolutionData.partsUsed}</p>}
-          
-          <div className="mt-4 pt-4 border-top border-white border-opacity-5">
-            {currentStatus === 'IN_PROGRESS' ? (
-              <button className="btn btn-success btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center gap-2" onClick={onResolve}>
-                 <BiCheckCircle size={18} /> Confirm Resolution & Close Ticket
+        <div>
+          {[
+            { label: 'Summary', value: resolutionData.summary },
+            { label: 'Actions Taken', value: resolutionData.actionsTaken || 'Not specified' },
+            ...(resolutionData.partsUsed ? [{ label: 'Parts Used', value: resolutionData.partsUsed }] : []),
+          ].map(item => (
+            <div key={item.label} style={{ marginBottom: '12px' }}>
+              <span style={labelStyle}>{item.label}</span>
+              <p style={{ margin: 0, color: '#1e3a8a', fontWeight: 600, fontSize: '0.88rem', background: '#fff', border: '1.5px solid #e0e7ff', borderRadius: '10px', padding: '10px 14px', whiteSpace: 'pre-wrap' }}>
+                {item.value}
+              </p>
+            </div>
+          ))}
+
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1.5px solid #c7d2fe' }}>
+            {currentStatus !== 'RESOLVED' ? (
+              <button
+                onClick={handleResolve}
+                style={{
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '50px',
+                  padding: '10px 0',
+                  width: '100%',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
+                }}
+              >
+                <BiCheckCircle size={18} /> Confirm Resolution & Close Ticket
               </button>
             ) : (
-              <div className="alert alert-success bg-success bg-opacity-10 border-0 text-success small mb-0 d-flex align-items-center gap-2">
-                <BiCheckCircle /> Resolved Status Confirmed
+              <div style={{ background: '#d1fae5', border: '1.5px solid #6ee7b7', borderRadius: '10px', padding: '12px 16px', color: '#065f46', fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <BiCheckCircle size={18} /> Resolved — Ticket Closed
               </div>
             )}
           </div>
         </div>
       )}
-      <style>{`
-        .uppercase { text-transform: uppercase; }
-        .tracking-wider { letter-spacing: 0.1em; font-size: 0.65rem; }
-      `}</style>
     </div>
   );
 };

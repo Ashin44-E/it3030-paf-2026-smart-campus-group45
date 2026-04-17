@@ -4,6 +4,9 @@ import com.smartcampus.model.TicketCategory;
 import com.smartcampus.model.TicketPriority;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class TicketRequestDto {
     private String title;
@@ -13,4 +16,5 @@ public class TicketRequestDto {
     private String resourceId;
     private String location;
     private String preferredContact;
+    private List<String> attachmentUrls = new ArrayList<>();
 }
