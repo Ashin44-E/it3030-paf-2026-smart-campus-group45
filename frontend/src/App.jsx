@@ -12,6 +12,7 @@ import ManageBookings from './pages/ManageBookings';
 import Unauthorized from './pages/Unauthorized';
 import OAuth2Callback from './pages/OAuth2Callback';
 import DashboardRedirect from './components/DashboardRedirect';
+import BookAssets from './pages/BookAssets';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           {/* Role-Specific Protected Dashboards */}
           <Route element={<ProtectedRoute allowedRoles={['USER']} />}>
             <Route path="/dashboard/user" element={<UserDashboard />} />
+            <Route path="/dashboard/user/book-assets" element={<BookAssets />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
