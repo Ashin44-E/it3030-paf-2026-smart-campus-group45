@@ -70,7 +70,7 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="d-flex bg-dark" style={{ minHeight: '100vh' }}>
+    <div className="d-flex bg-light min-vh-100 overflow-hidden">
       {/* Sidebar - Fixed on desktop */}
       <Sidebar />
 
@@ -85,10 +85,10 @@ const UserDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             className="mb-5"
           >
-            <h2 className="display-6 fw-bold text-white mb-2 underline-primary">
-              Welcome back, <span className="gradient-text">{user}</span>
-            </h2>
-            <p className="text-secondary">Here's what's happening on campus today.</p>
+            <h1 className="h2 fw-bold text-slate-900 mb-2">
+              Welcome back, <span className="text-primary">{user}</span>
+            </h1>
+            <p className="text-slate-500 fw-medium">Smart Campus Infrastructure Management Portal</p>
           </motion.div>
 
           {/* Stats Cards Section */}
@@ -121,20 +121,9 @@ const UserDashboard = () => {
       />
 
       <style>{`
-        .underline-primary {
-          position: relative;
-          display: inline-block;
-        }
-        .underline-primary::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          bottom: -10px;
-          width: 50px;
-          height: 4px;
-          background: var(--primary-color);
-          border-radius: 2px;
-        }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-500 { color: #64748b; }
+        .bg-light { background-color: #f8fafc !important; }
         @media (max-width: 991.98px) {
           .flex-grow-1 {
             margin-left: 0 !important;

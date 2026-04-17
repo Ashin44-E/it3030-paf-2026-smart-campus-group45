@@ -7,6 +7,8 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import TechnicianDashboard from './pages/TechnicianDashboard';
+import ManageResources from './pages/ManageResources';
+import ManageBookings from './pages/ManageBookings';
 import Unauthorized from './pages/Unauthorized';
 import OAuth2Callback from './pages/OAuth2Callback';
 import DashboardRedirect from './components/DashboardRedirect';
@@ -31,6 +33,8 @@ function App() {
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route path="/dashboard/admin/resources" element={<ManageResources />} />
+            <Route path="/dashboard/admin/bookings" element={<ManageBookings />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>

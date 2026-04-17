@@ -9,7 +9,7 @@ const ActivityItem = ({ activity, index, total }) => {
       case 'TICKET_ASSIGNED': return <BiWrench className="text-primary" />;
       case 'RESOURCE_UPDATED': return <BiPlusCircle className="text-info" />;
       case 'USER_REGISTERED': return <BiUserVoice className="text-warning" />;
-      default: return <BiTimeFive className="text-secondary" />;
+      default: return <BiTimeFive className="text-slate-400" />;
     }
   };
 
@@ -18,24 +18,26 @@ const ActivityItem = ({ activity, index, total }) => {
       {/* Timeline Line */}
       {index !== total - 1 && (
         <div 
-          className="position-absolute start-0 h-100 bg-white bg-opacity-10" 
-          style={{ width: '1px', left: '10px', top: '24px' }}
+          className="position-absolute start-0 h-100 bg-light shadow-sm" 
+          style={{ width: '2px', left: '10px', top: '24px' }}
         ></div>
       )}
       
       {/* Timeline Dot/Icon */}
       <div 
-        className="position-absolute start-0 bg-dark rounded-circle d-flex align-items-center justify-content-center p-1" 
-        style={{ width: '22px', height: '22px', left: '0', top: '2px', border: '1px solid rgba(255,255,255,0.1)' }}
+        className="position-absolute start-0 bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+        style={{ width: '22px', height: '22px', left: '0', top: '2px', border: '1px solid #f1f5f9' }}
       >
         {React.cloneElement(getIcon(activity.type), { size: 12 })}
       </div>
 
       <div className="ms-2">
-        <p className="small text-white mb-0 fw-medium">{activity.message}</p>
-        <span className="text-secondary opacity-75 d-block mt-1" style={{ fontSize: '0.65rem' }}>
-          {activity.timestamp} • {activity.user || 'System'}
-        </span>
+        <p className="small text-slate-800 mb-0 fw-bold">{activity.message}</p>
+        <div className="d-flex align-items-center gap-2 mt-1">
+          <span className="text-slate-500" style={{ fontSize: '0.65rem' }}>{activity.user || 'System'}</span>
+          <span className="text-slate-300">•</span>
+          <span className="text-slate-400" style={{ fontSize: '0.65rem' }}>{activity.timestamp}</span>
+        </div>
       </div>
     </div>
   );
@@ -43,10 +45,12 @@ const ActivityItem = ({ activity, index, total }) => {
 
 const RecentActivities = ({ activities = [] }) => {
   return (
-    <div className="glass-card p-4 border border-white border-opacity-10 h-100 shadow-lg">
-      <h3 className="h6 fw-bold mb-4 d-flex align-items-center gap-2 text-white">
-        <BiTimeFive size={18} className="text-secondary" />
-        Recent System Activities
+    <div className="glass-card p-4 border border-white h-100 shadow-sm bg-white bg-opacity-80">
+      <h3 className="h6 fw-bold mb-4 d-flex align-items-center gap-2 text-slate-900">
+        <div className="p-1 rounded bg-info bg-opacity-10 text-info">
+          <BiTimeFive size={18} />
+        </div>
+        Operational Pulse
       </h3>
 
       <div className="mt-2">
@@ -60,11 +64,21 @@ const RecentActivities = ({ activities = [] }) => {
             <ActivityItem activity={act} index={index} total={activities.length} />
           </motion.div>
         )) : (
-          <p className="text-secondary text-center py-5 small italic">No recent activities recorded.</p>
+          <div className="text-center py-5">
+            <BiTimeFive size={32} className="text-slate-200 mb-2" />
+            <p className="text-slate-400 small fw-medium">No recent activities recorded.</p>
+          </div>
         )}
       </div>
 
       <style>{`
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-400 { color: #94a3b8; }
+        .text-slate-300 { color: #cbd5e1; }
+        .text-slate-200 { color: #e2e8f0; }
+        .bg-light { background-color: #f8fafc !important; }
         .italic { font-style: italic; }
       `}</style>
     </div>

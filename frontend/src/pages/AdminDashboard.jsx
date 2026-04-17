@@ -13,6 +13,8 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
 
+import AdminLayout from '../components/admin-dashboard/AdminLayout';
+
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -105,112 +107,95 @@ const AdminDashboard = () => {
 
   const handleApproveBooking = (id) => {
     console.log("Approving booking:", id);
-    // Real API call: await axiosInstance.patch(`/bookings/${id}/approve`)
   };
 
   const handleRejectBooking = (id, reason) => {
     console.log("Rejecting booking:", id, "Reason:", reason);
-    // Real API call: await axiosInstance.patch(`/bookings/${id}/reject`, { reason })
   };
 
   return (
-    <div className="d-flex bg-dark min-vh-100 overflow-hidden">
-      {/* Admin Sidebar */}
-      <AdminSidebar />
+    <AdminLayout>
+      {/* Header Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-5 d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-3"
+      >
+        <div>
+          <h2 className="display-6 fw-bold text-slate-900 mb-2">
+            System <span className="gradient-text">Administration</span>
+          </h2>
+          <p className="text-slate-500 mb-0">Smart Campus Operations Hub • Unified Management Interface</p>
+        </div>
+        <div className="text-sm-end d-none d-md-block">
+          <span className="text-slate-400 small d-block mb-1">Last System Sync</span>
+          <span className="badge bg-white border border-success border-opacity-20 text-success fw-medium shadow-sm">Live Connection Stable</span>
+        </div>
+      </motion.div>
 
-      {/* Main Content Area */}
-      <div className="flex-grow-1 d-flex flex-column overflow-auto" style={{ marginLeft: '280px' }}>
-        <AdminTopbar />
+      {/* Stats Cards Section */}
+      <AdminStatsCards stats={data.stats} />
 
-        <main className="p-4 p-lg-5">
-          {/* Header Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-5 d-flex justify-content-between align-items-end"
-          >
-            <div>
-              <h2 className="display-6 fw-bold text-white mb-2">
-                System <span className="gradient-text">Administration</span>
-              </h2>
-              <p className="text-secondary mb-0">Smart Campus Operations Hub • Unified Management Interface</p>
-            </div>
-            <div className="text-end d-none d-md-block">
-              <span className="text-secondary small d-block mb-1">Last System Sync</span>
-              <span className="badge bg-dark border border-white border-opacity-10 text-success fw-medium">Live Connection Stable</span>
-            </div>
-          </motion.div>
+      <div className="row g-4 mb-4">
+        {/* Booking Management */}
+        <div className="col-12 col-xl-8">
+          <BookingApprovalPanel 
+            bookings={data.bookings} 
+            onApprove={handleApproveBooking} 
+            onReject={handleRejectBooking} 
+          />
+        </div>
+        
+        {/* Notifications Section */}
+        <div className="col-12 col-xl-4">
+          <NotificationPanel notifications={data.notifications} />
+        </div>
+      </div>
 
-          {/* Stats Cards Section */}
-          <AdminStatsCards stats={data.stats} />
+      <div className="row g-4 mb-4">
+          {/* Ticket Management */}
+          <div className="col-12 col-xl-8">
+          <TicketManagementPanel 
+            tickets={data.tickets} 
+            onAssign={(id) => console.log("Assigning ticket", id)}
+            onStatusChange={(id) => console.log("Status change", id)}
+          />
+        </div>
 
-          <div className="row g-4 mb-4">
-            {/* Booking Management */}
-            <div className="col-12 col-xl-8">
-              <BookingApprovalPanel 
-                bookings={data.bookings} 
-                onApprove={handleApproveBooking} 
-                onReject={handleRejectBooking} 
-              />
-            </div>
-            
-            {/* Notifications Section */}
-            <div className="col-12 col-xl-4 text-white">
-              <NotificationPanel notifications={data.notifications} />
-            </div>
-          </div>
+        {/* Activities Section */}
+        <div className="col-12 col-xl-4">
+            <RecentActivities activities={data.activities} />
+        </div>
+      </div>
 
-          <div className="row g-4 mb-4">
-             {/* Ticket Management */}
-             <div className="col-12 col-xl-8">
-              <TicketManagementPanel 
-                tickets={data.tickets} 
-                onAssign={(id) => console.log("Assigning ticket", id)}
-                onStatusChange={(id) => console.log("Status change", id)}
-              />
+      <div className="row g-4 mb-4">
+        {/* Resources Section */}
+        <div className="col-12 col-xl-7">
+            <div className="mb-4">
+              <AddResourceForm onResourceAdded={() => window.location.reload()} />
             </div>
+            <ResourceOverviewPanel 
+            resources={data.resources}
+            onStatusUpdate={(id, s) => console.log("Status update", id, s)}
+            onEdit={(res) => console.log("Edit resource", res)}
+            />
+        </div>
 
-            {/* Activities Section */}
-            <div className="col-12 col-xl-4 text-white">
-               <RecentActivities activities={data.activities} />
-            </div>
-          </div>
-
-          <div className="row g-4 mb-4">
-            {/* Resources Section */}
-            <div className="col-12 col-xl-7">
-               <div className="mb-4">
-                 <AddResourceForm onResourceAdded={() => window.location.reload()} />
-               </div>
-               <ResourceOverviewPanel 
-                resources={data.resources}
-                onStatusUpdate={(id, s) => console.log("Status update", id, s)}
-                onEdit={(res) => console.log("Edit resource", res)}
-               />
-            </div>
-
-            {/* Users Section */}
-            <div className="col-12 col-xl-5">
-               <UserManagementPanel 
-                users={data.users}
-                onChangeRole={(id, r) => console.log("Change role", id, r)}
-               />
-            </div>
-          </div>
-        </main>
+        {/* Users Section */}
+        <div className="col-12 col-xl-5">
+            <UserManagementPanel 
+            users={data.users}
+            onChangeRole={(id, r) => console.log("Change role", id, r)}
+            />
+        </div>
       </div>
 
       <style>{`
-        .gradient-text {
-          background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        @media (max-width: 991.98px) {
-          .flex-grow-1 { margin-left: 0 !important; }
-        }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-400 { color: #94a3b8; }
       `}</style>
-    </div>
+    </AdminLayout>
   );
 };
 
