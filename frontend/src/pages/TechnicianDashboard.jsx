@@ -8,6 +8,7 @@ import TicketDetailsModal from '../components/technician-dashboard/TicketDetails
 import NotificationsPanel from '../components/technician-dashboard/NotificationsPanel';
 import BookingApprovalPanel from '../components/admin-dashboard/BookingApprovalPanel';
 import BookingDetailsModal from '../components/technician-dashboard/BookingDetailsModal';
+import ProfileModal from '../components/dashboard/ProfileModal';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import toast from 'react-hot-toast';
@@ -19,6 +20,7 @@ const TechnicianDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   
   const [data, setData] = useState({
     stats: {
@@ -154,9 +156,11 @@ const TechnicianDashboard = () => {
 
   return (
     <div className="d-flex bg-light min-vh-100 overflow-hidden">
-      <TechnicianSidebar />
+      {/* Sidebar - Fixed on desktop */}
+      <TechnicianSidebar onProfileClick={() => setIsProfileModalOpen(true)} />
 
-      <div className="flex-grow-1 d-flex flex-column overflow-auto" style={{ marginLeft: '280px' }}>
+      {/* Main Content Area */}
+      <div className="flex-grow-1 d-flex flex-column" style={{ marginLeft: '260px' }}>
         <TechnicianTopbar notificationCount={data.stats.notifications} />
 
         <main className="p-4 p-lg-5">
@@ -233,6 +237,13 @@ const TechnicianDashboard = () => {
           .flex-grow-1 { margin-left: 0 !important; }
         }
       `}</style>
+      
+      <ProfileModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+        user={user} 
+        role="Technician" 
+      />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import QuickActions from '../components/dashboard/QuickActions';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
+import ProfileModal from '../components/dashboard/ProfileModal';
 
 const UserDashboard = () => {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ const UserDashboard = () => {
     }
   });
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,7 +73,7 @@ const UserDashboard = () => {
   return (
     <div className="d-flex bg-light min-vh-100 overflow-hidden">
       {/* Sidebar - Fixed on desktop */}
-      <Sidebar />
+      <Sidebar onProfileClick={() => setIsProfileModalOpen(true)} />
 
       {/* Main Content Area */}
       <div className="flex-grow-1 d-flex flex-column" style={{ marginLeft: '260px' }}>
@@ -122,6 +124,13 @@ const UserDashboard = () => {
           }
         }
       `}</style>
+      
+      <ProfileModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+        user={user} 
+        role="User" 
+      />
     </div>
   );
 };

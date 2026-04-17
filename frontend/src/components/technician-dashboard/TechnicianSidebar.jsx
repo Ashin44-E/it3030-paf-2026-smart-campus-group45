@@ -14,7 +14,7 @@ import {
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
-const TechnicianSidebar = () => {
+const TechnicianSidebar = ({ onProfileClick }) => {
   const { logout } = useAuth();
 
   const menuItems = [
@@ -23,8 +23,7 @@ const TechnicianSidebar = () => {
     { name: 'In Progress', icon: <BiWrench />, path: '/dashboard/technician/in-progress' },
     { name: 'Resolved Tickets', icon: <BiCheckCircle />, path: '/dashboard/technician/resolved' },
     { name: 'Booking Management', icon: <BiCalendarCheck />, path: '/dashboard/technician/bookings' },
-    { name: 'Notifications', icon: <BiBell />, path: '/dashboard/technician/notifications' },
-    { name: 'Profile', icon: <BiUser />, path: '/dashboard/technician/profile' },
+    { name: 'Profile', icon: <BiUser />, isAction: true, onClick: onProfileClick },
   ];
 
   return (
@@ -40,20 +39,31 @@ const TechnicianSidebar = () => {
       </div>
 
       <nav className="flex-grow-1 px-3 mt-3 overflow-auto">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.path}
-            className={({ isActive }) => 
-              `nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all ${
-                isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover-bg-light'
-              }`
-            }
-          >
-            <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
-            <span className="small fw-bold">{item.name}</span>
-          </NavLink>
-        ))}
+        {menuItems.map((item) => 
+          item.isAction ? (
+            <button
+              key={item.name}
+              onClick={item.onClick}
+              className="btn btn-link nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all text-slate-600 hover-bg-light text-decoration-none text-start border-0 w-100"
+            >
+              <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+              <span className="small fw-bold">{item.name}</span>
+            </button>
+          ) : (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              className={({ isActive }) => 
+                `nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all ${
+                  isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover-bg-light'
+                }`
+              }
+            >
+              <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+              <span className="small fw-bold">{item.name}</span>
+            </NavLink>
+          )
+        )}
       </nav>
 
       <div className="p-3 border-top border-light">

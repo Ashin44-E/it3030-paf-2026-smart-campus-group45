@@ -17,10 +17,9 @@ const StatsCard = ({ title, value, icon, color, delay }) => (
   >
     <div className="glass-card p-4 h-100 shadow-sm border border-white">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className={`p-3 rounded-4 bg-${color} bg-opacity-10 shadow-sm border border-${color} border-opacity-10`}>
+        <div className={`p-3 rounded-4 bg-${color} bg-opacity-10 shadow-sm border border-${color} border-opacity-10 d-inline-block`}>
           {React.cloneElement(icon, { size: 24, className: `text-${color}` })}
         </div>
-        <span className={`text-${color} small fw-bold text-uppercase ls-wide`} style={{ fontSize: '0.65rem' }}>+12% Trend</span>
       </div>
       <div>
         <h3 className="h6 text-slate-500 fw-bold text-uppercase ls-wide mb-1" style={{ fontSize: '0.65rem' }}>{title}</h3>
