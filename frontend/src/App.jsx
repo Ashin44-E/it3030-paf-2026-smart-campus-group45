@@ -10,10 +10,12 @@ import AdminDashboard from './pages/AdminDashboard';
 import TechnicianDashboard from './pages/TechnicianDashboard';
 import ManageResources from './pages/ManageResources';
 import ManageBookings from './pages/ManageBookings';
+import ManageUsers from './pages/ManageUsers';
 import Unauthorized from './pages/Unauthorized';
 import OAuth2Callback from './pages/OAuth2Callback';
 import DashboardRedirect from './components/DashboardRedirect';
 import BookAssets from './pages/BookAssets';
+import MyBookings from './pages/MyBookings';
 import TechnicianBookings from './pages/technician/TechnicianBookings';
 
 function App() {
@@ -34,12 +36,14 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['USER']} />}>
             <Route path="/dashboard/user" element={<UserDashboard />} />
             <Route path="/dashboard/user/book-assets" element={<BookAssets />} />
+            <Route path="/dashboard/user/bookings" element={<MyBookings />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
             <Route path="/dashboard/admin" element={<AdminDashboard />} />
             <Route path="/dashboard/admin/resources" element={<ManageResources />} />
             <Route path="/dashboard/admin/bookings" element={<ManageBookings />} />
+            <Route path="/dashboard/admin/users" element={<ManageUsers />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>

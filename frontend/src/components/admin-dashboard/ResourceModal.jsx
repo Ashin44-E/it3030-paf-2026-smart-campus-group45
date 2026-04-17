@@ -43,21 +43,35 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (resource && isOpen) {
-      setFormData({
-        resourceName: resource.resourceName || '',
-        resourceType: resource.resourceType || '',
-        description: resource.description || '',
-        building: resource.building || '',
-        floor: resource.floor || '',
-        roomNumber: resource.roomNumber || '',
-        capacity: resource.capacity || '',
-        status: resource.status || 'ACTIVE',
-        imageUrl: resource.imageUrl || ''
-      });
+    if (isOpen) {
+      if (mode === 'create') {
+        setFormData({
+          resourceName: '',
+          resourceType: 'LECTURE_HALL',
+          description: '',
+          building: '',
+          floor: '',
+          roomNumber: '',
+          capacity: '',
+          status: 'ACTIVE',
+          imageUrl: ''
+        });
+      } else if (resource) {
+        setFormData({
+          resourceName: resource.resourceName || '',
+          resourceType: resource.resourceType || '',
+          description: resource.description || '',
+          building: resource.building || '',
+          floor: resource.floor || '',
+          roomNumber: resource.roomNumber || '',
+          capacity: resource.capacity || '',
+          status: resource.status || 'ACTIVE',
+          imageUrl: resource.imageUrl || ''
+        });
+      }
       setErrors({});
     }
-  }, [resource, isOpen]);
+  }, [resource, mode, isOpen]);
 
   const isFixedResource = (type) => {
     return ["LECTURE_HALL", "COMPUTER_LAB", "MEETING_ROOM", "AUDITORIUM", "SEMINAR_HALL", "SPORTS_GROUND", "CONFERENCE_ROOM", "LIBRARY_ROOM"].includes(type);
@@ -65,16 +79,23 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.resourceName) newErrors.resourceName = "Required";
-    if (!formData.resourceType) newErrors.resourceType = "Required";
-    if (isFixedResource(formData.resourceType) && !formData.building) {
-      newErrors.building = "Required";
+    if (!formData.resourceName.trim()) newErrors.resourceName = "Proper asset name is required";
+    if (!formData.resourceType) newErrors.resourceType = "Please select a category";
+    if (isFixedResource(formData.resourceType) && !formData.building.trim()) {
+      newErrors.building = "Building location is mandatory for this type";
     }
-    if (!formData.capacity || formData.capacity <= 0) newErrors.capacity = "Must be > 0";
-    if (!formData.imageUrl) newErrors.image = "Image required";
+    const capacityVal = parseInt(formData.capacity);
+    if (!formData.capacity || isNaN(capacityVal) || capacityVal <= 0) {
+      newErrors.capacity = "Must be a valid positive number";
+    }
+    if (!formData.imageUrl) newErrors.imageUrl = "Asset image is required for the catalogue";
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please correct the errors in the form before submitting.");
+      return false;
+    }
+    return true;
   };
 
   const handleImageChange = async (e) => {
@@ -107,16 +128,25 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
         submissionData.roomNumber = "";
       }
 
-      const response = await axiosInstance.put(`/resources/${resource.id}`, {
-        ...submissionData,
-        capacity: parseInt(formData.capacity)
-      });
+      let response;
+      if (mode === 'create') {
+        response = await axiosInstance.post('/resources', {
+          ...submissionData,
+          capacity: parseInt(formData.capacity)
+        });
+        toast.success("Resource registered successfully!");
+      } else {
+        response = await axiosInstance.put(`/resources/${resource.id}`, {
+          ...submissionData,
+          capacity: parseInt(formData.capacity)
+        });
+        toast.success("Resource updated successfully!");
+      }
       
-      toast.success("Resource updated successfully!");
       onUpdate(response.data);
       onClose();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error updating resource");
+      toast.error(err.response?.data?.message || "Error processing resource");
     } finally {
       setIsSubmitting(false);
     }
@@ -136,14 +166,14 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
         {/* Modal Header */}
         <div className="px-4 py-3 border-bottom border-light d-flex justify-content-between align-items-center bg-light bg-opacity-50">
           <div className="d-flex align-items-center gap-2">
-            <div className={`p-2 rounded-3 bg-opacity-10 ${mode === 'view' ? 'bg-primary text-primary' : 'bg-warning text-warning'}`}>
-              {mode === 'view' ? <BiShow size={20} /> : <BiEdit size={20} />}
+            <div className={`p-2 rounded-3 bg-opacity-10 ${mode === 'view' ? 'bg-primary text-primary' : mode === 'create' ? 'bg-success text-success' : 'bg-warning text-warning'}`}>
+              {mode === 'view' ? <BiShow size={20} /> : mode === 'create' ? <BiBuildings size={20} /> : <BiEdit size={20} />}
             </div>
             <div>
               <h5 className="mb-0 fw-bold text-slate-900">
-                {mode === 'view' ? 'Asset Details' : 'Edit Asset Configuration'}
+                {mode === 'view' ? 'Asset Details' : mode === 'create' ? 'Register New Campus Asset' : 'Edit Asset Configuration'}
               </h5>
-              <p className="small text-muted mb-0">{resource?.resourceCode}</p>
+              <p className="small text-muted mb-0">{mode === 'create' ? 'Catalogue Entry' : resource?.resourceCode}</p>
             </div>
           </div>
           <button onClick={onClose} className="btn-close shadow-none"></button>
@@ -161,13 +191,14 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                   style={{ width: '100%', height: '240px', objectFit: 'cover' }}
                 />
                 
-                {mode === 'edit' && (
+                {(mode === 'edit' || mode === 'create') && (
                   <div className="mt-3">
-                    <label className="btn btn-white btn-sm w-100 border-light text-slate-600 d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                    <label className={`btn btn-white btn-sm w-100 border-light text-slate-600 d-flex align-items-center justify-content-center gap-2 shadow-sm ${errors.imageUrl ? 'border-danger' : ''}`}>
                       <BiCloudUpload size={18} />
-                      {isUploading ? 'Uploading...' : 'Change Asset Image'}
+                      {isUploading ? 'Uploading...' : 'Upload Asset Image'}
                       <input type="file" hidden onChange={handleImageChange} accept="image/*" disabled={isUploading} />
                     </label>
+                    {errors.imageUrl && <div className="text-danger x-small fw-bold mt-1 text-center">{errors.imageUrl}</div>}
                   </div>
                 )}
 
@@ -181,7 +212,7 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
               <div className="glass-card bg-white p-3 border-light shadow-sm">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span className="small text-slate-500 fw-bold text-uppercase">Asset ID</span>
-                  <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10">{resource?.resourceCode}</span>
+                  <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10">{mode === 'create' ? 'PENDING' : resource?.resourceCode}</span>
                 </div>
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span className="small text-slate-500 fw-bold text-uppercase">Type</span>
@@ -204,12 +235,13 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                     <input 
                       type="text" 
                       disabled={mode === 'view'}
-                      className="form-control bg-light border-light text-slate-800 shadow-none px-3" 
+                      className={`form-control bg-light border-light text-slate-800 shadow-none px-3 ${errors.resourceName ? 'is-invalid' : ''}`} 
                       value={formData.resourceName}
                       onChange={(e) => setFormData({...formData, resourceName: e.target.value})}
                       required
                     />
                   </div>
+                  {errors.resourceName && <div className="text-danger x-small fw-bold mt-1 ps-1">{errors.resourceName}</div>}
                 </div>
                 
                 <div className="col-md-6">
@@ -218,7 +250,7 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                     <span className="input-group-text bg-light border-light text-muted"><BiCategory /></span>
                     <select 
                       disabled={mode === 'view'}
-                      className="form-select bg-light border-light text-slate-800 shadow-none"
+                      className={`form-select bg-light border-light text-slate-800 shadow-none ${errors.resourceType ? 'is-invalid' : ''}`}
                       value={formData.resourceType}
                       onChange={(e) => setFormData({...formData, resourceType: e.target.value})}
                     >
@@ -227,6 +259,7 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                       ))}
                     </select>
                   </div>
+                  {errors.resourceType && <div className="text-danger x-small fw-bold mt-1 ps-1">{errors.resourceType}</div>}
                 </div>
 
                 <div className="col-md-6">
@@ -244,14 +277,15 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
 
                 <div className="col-12">
                   <label className="form-label text-slate-600 small fw-bold">Description</label>
-                  <textarea 
-                    disabled={mode === 'view'}
-                    className="form-control bg-light border-light text-slate-800 shadow-none px-3"
-                    rows="3"
-                    value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  />
-                </div>
+                    <textarea 
+                      disabled={mode === 'view'}
+                      className="form-control bg-light border-light text-slate-800 shadow-none px-3"
+                      placeholder="Special instructions, equipment lists, or usage policies..."
+                      rows="3"
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    />
+                  </div>
 
                 {/* Location Section */}
                 <AnimatePresence>
@@ -262,17 +296,18 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                       className="col-12"
                     >
                       <div className="row g-3 p-3 rounded-4 bg-light bg-opacity-50 border border-light">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                           <label className="form-label text-slate-600 small fw-bold">Building</label>
                           <input 
                             type="text" 
                             disabled={mode === 'view'}
-                            className="form-control bg-white border-light text-slate-800 shadow-none px-3" 
+                            className={`form-control bg-white border-light text-slate-800 shadow-none px-3 ${errors.building ? 'is-invalid' : ''}`} 
                             value={formData.building}
                             onChange={(e) => setFormData({...formData, building: e.target.value})}
                           />
+                          {errors.building && <div className="text-danger x-small fw-bold mt-1">{errors.building}</div>}
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                           <label className="form-label text-slate-600 small fw-bold">Floor</label>
                           <input 
                             type="text" 
@@ -282,7 +317,7 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                             onChange={(e) => setFormData({...formData, floor: e.target.value})}
                           />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                           <label className="form-label text-slate-600 small fw-bold">Room</label>
                           <input 
                             type="text" 
@@ -292,6 +327,17 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
                             onChange={(e) => setFormData({...formData, roomNumber: e.target.value})}
                           />
                         </div>
+                        <div className="col-md-3">
+                          <label className="form-label text-slate-600 small fw-bold">Capacity</label>
+                          <input 
+                            type="number" 
+                            disabled={mode === 'view'}
+                            className={`form-control bg-white border-light text-slate-800 shadow-none px-3 ${errors.capacity ? 'is-invalid' : ''}`} 
+                            value={formData.capacity}
+                            onChange={(e) => setFormData({...formData, capacity: e.target.value})}
+                          />
+                          {errors.capacity && <div className="text-danger x-small fw-bold mt-1">{errors.capacity}</div>}
+                        </div>
                       </div>
                     </motion.div>
                   )}
@@ -299,10 +345,10 @@ const ResourceModal = ({ resource, mode, isOpen, onClose, onUpdate }) => {
 
                 <div className="col-12 mt-4 pt-3 border-top border-light d-flex justify-content-end gap-3">
                   <button type="button" onClick={onClose} className="btn btn-light px-4 text-slate-700">{mode === 'view' ? 'Close' : 'Cancel'}</button>
-                  {mode === 'edit' && (
+                  {(mode === 'edit' || mode === 'create') && (
                     <button type="submit" disabled={isSubmitting || isUploading} className="btn btn-primary fw-bold px-4 shadow-sm">
                       {isSubmitting ? <BiLoaderAlt className="spinner-border spinner-border-sm border-0" /> : <BiSave className="me-2" />}
-                      Save Configuration
+                      {mode === 'create' ? 'Register Asset' : 'Save Configuration'}
                     </button>
                   )}
                 </div>

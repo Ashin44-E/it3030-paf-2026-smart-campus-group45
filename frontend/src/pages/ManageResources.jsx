@@ -58,6 +58,12 @@ const ManageResources = () => {
     setIsModalOpen(true);
   };
 
+  const handleCreate = () => {
+    setSelectedResource(null);
+    setModalMode('create');
+    setIsModalOpen(true);
+  };
+
   const handleDeleteClick = (resource) => {
     setSelectedResource(resource);
     setIsDeleteModalOpen(true);
@@ -76,8 +82,14 @@ const ManageResources = () => {
     }
   };
 
-  const handleUpdate = (updatedResource) => {
-    setResources(resources.map(r => r.id === updatedResource.id ? updatedResource : r));
+  const handleResourceChange = (changedResource) => {
+    setResources(prev => {
+      const exists = prev.find(r => r.id === changedResource.id);
+      if (exists) {
+        return prev.map(r => r.id === changedResource.id ? changedResource : r);
+      }
+      return [changedResource, ...prev];
+    });
   };
 
   return (
@@ -104,7 +116,7 @@ const ManageResources = () => {
         </div>
         
         <button 
-          onClick={() => navigate('/dashboard/admin')}
+          onClick={handleCreate}
           className="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 fw-semibold shadow-lg"
         >
           <BiPlus size={20} /> Register New Asset
@@ -177,7 +189,7 @@ const ManageResources = () => {
             resource={selectedResource}
             mode={modalMode}
             onClose={() => setIsModalOpen(false)}
-            onUpdate={handleUpdate}
+            onUpdate={handleResourceChange}
           />
         )}
         

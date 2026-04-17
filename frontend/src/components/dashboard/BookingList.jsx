@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BiCalendarCheck } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 
 const BookingList = ({ bookings = [] }) => {
+  const navigate = useNavigate();
   const getStatusBadge = (status) => {
     switch (status) {
       case 'APPROVED': return 'badge bg-success bg-opacity-10 text-success';
@@ -22,7 +24,13 @@ const BookingList = ({ bookings = [] }) => {
           </div>
           Recent Activity
         </h3>
-        <button className="btn btn-link btn-sm text-primary text-decoration-none fw-bold" style={{ fontSize: '0.75rem' }}>View History</button>
+        <button 
+          onClick={() => navigate('/dashboard/user/bookings')}
+          className="btn btn-link btn-sm text-primary text-decoration-none fw-bold" 
+          style={{ fontSize: '0.75rem' }}
+        >
+          View History
+        </button>
       </div>
       
       <div className="table-responsive">
