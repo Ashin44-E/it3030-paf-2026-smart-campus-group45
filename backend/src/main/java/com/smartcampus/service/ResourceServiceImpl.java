@@ -57,6 +57,42 @@ public class ResourceServiceImpl implements ResourceService {
         return resourceRepository.save(resource);
     }
 
+    @Override
+    public java.util.List<Resource> getAllResources() {
+        return resourceRepository.findAll();
+    }
+
+    @Override
+    public Resource getResourceById(String id) {
+        return resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with id: " + id));
+    }
+
+    @Override
+    public Resource updateResource(String id, ResourceDto resourceDto) {
+        Resource existingResource = getResourceById(id);
+        
+        existingResource.setResourceName(resourceDto.getResourceName());
+        existingResource.setResourceType(resourceDto.getResourceType());
+        existingResource.setDescription(resourceDto.getDescription());
+        existingResource.setBuilding(resourceDto.getBuilding());
+        existingResource.setFloor(resourceDto.getFloor());
+        existingResource.setRoomNumber(resourceDto.getRoomNumber());
+        existingResource.setCapacity(resourceDto.getCapacity());
+        existingResource.setStatus(resourceDto.getStatus());
+        existingResource.setImageUrl(resourceDto.getImageUrl());
+        
+        return resourceRepository.save(existingResource);
+    }
+
+    @Override
+    public void deleteResource(String id) {
+        if (!resourceRepository.existsById(id)) {
+            throw new RuntimeException("Resource not found with id: " + id);
+        }
+        resourceRepository.deleteById(id);
+    }
+
     private String generateResourceCode(ResourceType type) {
         String prefix = PREFIX_MAP.getOrDefault(type, "RES");
         long count = resourceRepository.countByResourceType(type);

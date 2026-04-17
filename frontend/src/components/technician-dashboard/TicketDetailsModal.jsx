@@ -16,20 +16,20 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
   };
 
   return (
-    <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)' }}>
+    <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)' }}>
       <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div className="modal-content glass-card border border-white border-opacity-10 shadow-2xl overflow-hidden" style={{ minHeight: '80vh' }}>
+        <div className="modal-content glass-card bg-white border-white shadow-2xl overflow-hidden" style={{ minHeight: '80vh' }}>
           
           {/* Modal Header */}
-          <div className="modal-header border-bottom border-white border-opacity-5 p-4 py-3 align-items-start">
+          <div className="modal-header border-bottom border-light p-4 py-3 align-items-start bg-light bg-opacity-50">
             <div className="flex-grow-1">
               <div className="d-flex align-items-center gap-2 mb-2">
                 <span className={getPriorityBadge(ticket.priority)}>{ticket.priority} PRIORITY</span>
-                <span className="badge bg-dark border border-white border-opacity-10 text-secondary" style={{ fontSize: '0.7rem' }}>#{ticket.id}</span>
+                <span className="badge bg-white border border-light text-slate-400" style={{ fontSize: '0.7rem' }}>REF: #{ticket.id}</span>
               </div>
-              <h2 className="modal-title h4 text-white fw-bold">{ticket.title}</h2>
+              <h2 className="modal-title h4 text-slate-900 fw-bold">{ticket.title}</h2>
             </div>
-            <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
+            <button type="button" className="btn-close shadow-none" onClick={onClose}></button>
           </div>
 
           {/* Modal Body */}
@@ -37,46 +37,54 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
             <div className="row g-0 h-100">
               
               {/* Left Column: Details & Notes */}
-              <div className="col-lg-7 p-4 border-end border-white border-opacity-5 scroll-content">
+              <div className="col-lg-7 p-4 border-end border-light scroll-content">
                 <section className="mb-5">
-                  <h3 className="h6 fw-bold text-secondary text-uppercase mb-3 tracking-wider">Issue Description</h3>
-                  <p className="text-white bg-dark bg-opacity-25 p-3 rounded-3 border border-white border-opacity-5">
+                  <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-3 tracking-wider">Issue Description</h3>
+                  <p className="text-slate-700 bg-light p-3 rounded-3 border border-light fw-medium">
                     {ticket.description || 'No detailed description provided.'}
                   </p>
                 </section>
 
                 <div className="row g-4 mb-5">
                   <div className="col-md-6">
-                    <h3 className="h6 fw-bold text-secondary text-uppercase mb-2 tracking-wider">Location & Resource</h3>
-                    <div className="d-flex align-items-center gap-2 text-white">
-                      <BiMap className="text-primary" />
+                    <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-2 tracking-wider">Location & Resource</h3>
+                    <div className="d-flex align-items-center gap-2 text-slate-800 fw-bold">
+                      <div className="p-1 rounded bg-primary bg-opacity-10 text-primary">
+                        <BiMap />
+                      </div>
                       <span>{ticket.resourceName || 'Global Campus'}</span>
                     </div>
                   </div>
                   <div className="col-md-6">
-                    <h3 className="h6 fw-bold text-secondary text-uppercase mb-2 tracking-wider">Category</h3>
-                    <div className="d-flex align-items-center gap-2 text-white">
-                      <BiTag className="text-info" />
+                    <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-2 tracking-wider">Category</h3>
+                    <div className="d-flex align-items-center gap-2 text-slate-800 fw-bold">
+                      <div className="p-1 rounded bg-info bg-opacity-10 text-info">
+                        <BiTag />
+                      </div>
                       <span>{ticket.category}</span>
                     </div>
                   </div>
                   <div className="col-md-6">
-                    <h3 className="h6 fw-bold text-secondary text-uppercase mb-2 tracking-wider">Reported By</h3>
-                    <div className="d-flex align-items-center gap-2 text-white">
-                      <BiUser className="text-warning" />
+                    <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-2 tracking-wider">Reported By</h3>
+                    <div className="d-flex align-items-center gap-2 text-slate-800 fw-bold">
+                      <div className="p-1 rounded bg-warning bg-opacity-10 text-warning">
+                        <BiUser />
+                      </div>
                       <span>{ticket.reportedBy}</span>
                     </div>
                   </div>
                   <div className="col-md-6">
-                    <h3 className="h6 fw-bold text-secondary text-uppercase mb-2 tracking-wider">Date Reported</h3>
-                    <div className="d-flex align-items-center gap-2 text-white">
-                      <BiCalendar className="text-primary" />
+                    <h3 className="h6 fw-bold text-slate-400 text-uppercase mb-2 tracking-wider">Date Reported</h3>
+                    <div className="d-flex align-items-center gap-2 text-slate-800 fw-bold">
+                      <div className="p-1 rounded bg-primary bg-opacity-10 text-primary">
+                        <BiCalendar />
+                      </div>
                       <span>{ticket.reportedDate || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
 
-                <hr className="border-white border-opacity-10 my-5" />
+                <hr className="border-light my-5" />
 
                 {/* Resolution Notes Section */}
                 <section>
@@ -90,7 +98,7 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
               </div>
 
               {/* Right Column: Comments & Activity */}
-              <div className="col-lg-5 p-4 bg-dark bg-opacity-25 scroll-content">
+              <div className="col-lg-5 p-4 bg-light bg-opacity-30 scroll-content">
                 <TicketCommentsPanel ticketId={ticket.id} />
               </div>
 
@@ -98,12 +106,12 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
           </div>
 
           {/* Modal Footer (Optional status toggle) */}
-          <div className="modal-footer border-top border-white border-opacity-5 bg-dark bg-opacity-50 p-3">
+          <div className="modal-footer border-top border-light bg-light bg-opacity-50 p-3">
              <div className="d-flex gap-2 w-100 justify-content-end">
-                <button className="btn btn-outline-secondary rounded-pill px-4 border-opacity-25 text-white" onClick={onClose}>Close</button>
+                <button className="btn btn-link text-slate-500 text-decoration-none fw-bold" onClick={onClose}>Dismiss Panel</button>
                 {ticket.status === 'OPEN' && (
-                  <button className="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2 fw-semibold" onClick={() => onUpdateStatus(ticket.id, 'IN_PROGRESS')}>
-                    <BiPlayCircle /> Start Working
+                  <button className="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2 fw-bold shadow-sm" onClick={() => onUpdateStatus(ticket.id, 'IN_PROGRESS')}>
+                     Start Working
                   </button>
                 )}
              </div>
@@ -113,7 +121,14 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, onUpdateStatus, onSaveNot
       </div>
       <style>{`
         .scroll-content { max-height: 70vh; overflow-y: auto; }
-        .tracking-wider { letter-spacing: 0.1em; font-size: 0.7rem; }
+        .tracking-wider { letter-spacing: 0.1em; font-size: 0.65rem; }
+        .text-slate-900 { color: #0f172a; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-400 { color: #94a3b8; }
+        .border-light { border-color: #f1f5f9 !important; }
+        .bg-light { background-color: #f8fafc !important; }
       `}</style>
     </div>
   );

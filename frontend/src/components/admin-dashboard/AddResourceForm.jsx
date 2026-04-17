@@ -122,27 +122,27 @@ const AddResourceForm = ({ onResourceAdded }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card p-4 border border-white border-opacity-10 shadow-lg"
+      className="glass-card p-4 border border-white shadow-sm"
     >
       <div className="d-flex align-items-center gap-3 mb-4">
         <div className="p-3 rounded-4 bg-primary bg-opacity-10">
           <BiBuildings size={24} className="text-primary" />
         </div>
         <div>
-          <h3 className="h5 fw-bold text-white mb-0">Add New Resource</h3>
-          <p className="small text-secondary mb-0">Module A: Facilities & Assets Catalogue</p>
+          <h3 className="h5 fw-bold text-slate-800 mb-0">Add New Resource</h3>
+          <p className="small text-muted mb-0">Module A: Facilities & Assets Catalogue</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="row g-3">
         {/* Basic Info */}
         <div className="col-md-6">
-          <label className="form-label text-secondary small">Resource Name</label>
+          <label className="form-label text-slate-600 small fw-semibold">Resource Name</label>
           <div className="input-group">
-            <span className="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><BiInfoCircle /></span>
+            <span className="input-group-text bg-white border-light text-muted"><BiInfoCircle /></span>
             <input
               type="text"
-              className={`form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25 ${errors.resourceName ? 'is-invalid' : ''}`}
+              className={`form-control bg-white text-slate-800 border-light ${errors.resourceName ? 'is-invalid' : ''}`}
               value={formData.resourceName}
               onChange={(e) => setFormData({...formData, resourceName: e.target.value})}
               placeholder="e.g. Main Hall"
@@ -151,26 +151,26 @@ const AddResourceForm = ({ onResourceAdded }) => {
         </div>
 
         <div className="col-md-6">
-          <label className="form-label text-secondary small">Resource Type</label>
+          <label className="form-label text-slate-600 small fw-semibold">Resource Type</label>
           <div className="input-group">
-            <span className="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><BiCategory /></span>
+            <span className="input-group-text bg-white border-light text-muted"><BiCategory /></span>
             <select
-              className={`form-select bg-dark bg-opacity-25 text-white border-secondary border-opacity-25 ${errors.resourceType ? 'is-invalid' : ''}`}
+              className={`form-select bg-white text-slate-800 border-light ${errors.resourceType ? 'is-invalid' : ''}`}
               value={formData.resourceType}
               onChange={(e) => setFormData({...formData, resourceType: e.target.value})}
             >
-              <option value="" disabled className="bg-dark">Select Type</option>
+              <option value="" disabled>Select Type</option>
               {RESOURCE_TYPES.map(type => (
-                <option key={type} value={type} className="bg-dark">{type.replace(/_/g, ' ')}</option>
+                <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
               ))}
             </select>
           </div>
         </div>
 
         <div className="col-12">
-          <label className="form-label text-secondary small">Description</label>
+          <label className="form-label text-slate-600 small fw-semibold">Description</label>
           <textarea
-            className="form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25"
+            className="form-control bg-white text-slate-800 border-light"
             rows="2"
             value={formData.description}
             onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -190,12 +190,12 @@ const AddResourceForm = ({ onResourceAdded }) => {
             >
               <div className="row g-3 pt-2">
                 <div className="col-md-4">
-                  <label className="form-label text-secondary small">Building</label>
+                  <label className="form-label text-slate-600 small fw-semibold">Building</label>
                   <div className="input-group">
-                    <span className="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><BiMap /></span>
+                    <span className="input-group-text bg-white border-light text-muted"><BiMap /></span>
                     <input
                       type="text"
-                      className={`form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25 ${errors.building ? 'is-invalid' : ''}`}
+                      className={`form-control bg-white text-slate-800 border-light ${errors.building ? 'is-invalid' : ''}`}
                       value={formData.building}
                       onChange={(e) => setFormData({...formData, building: e.target.value})}
                       placeholder="Bld 01"
@@ -204,10 +204,10 @@ const AddResourceForm = ({ onResourceAdded }) => {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label text-secondary small">Floor</label>
+                  <label className="form-label text-slate-600 small fw-semibold">Floor</label>
                   <input
                     type="text"
-                    className="form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25"
+                    className="form-control bg-white text-slate-800 border-light"
                     value={formData.floor}
                     onChange={(e) => setFormData({...formData, floor: e.target.value})}
                     placeholder="1st"
@@ -215,10 +215,10 @@ const AddResourceForm = ({ onResourceAdded }) => {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label text-secondary small">Room No.</label>
+                  <label className="form-label text-slate-600 small fw-semibold">Room No.</label>
                   <input
                     type="text"
-                    className="form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25"
+                    className="form-control bg-white text-slate-800 border-light"
                     value={formData.roomNumber}
                     onChange={(e) => setFormData({...formData, roomNumber: e.target.value})}
                     placeholder="101"
@@ -231,12 +231,12 @@ const AddResourceForm = ({ onResourceAdded }) => {
 
         {/* Capacity Section */}
         <div className="col-md-6">
-          <label className="form-label text-secondary small">Capacity</label>
+          <label className="form-label text-slate-600 small fw-semibold">Capacity</label>
           <div className="input-group">
-            <span className="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><BiGroup /></span>
+            <span className="input-group-text bg-white border-light text-muted"><BiGroup /></span>
             <input
               type="number"
-              className={`form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25 ${errors.capacity ? 'is-invalid' : ''}`}
+              className={`form-control bg-white text-slate-800 border-light ${errors.capacity ? 'is-invalid' : ''}`}
               value={formData.capacity}
               onChange={(e) => setFormData({...formData, capacity: e.target.value})}
               placeholder="0"
@@ -245,37 +245,37 @@ const AddResourceForm = ({ onResourceAdded }) => {
         </div>
 
         <div className="col-md-6">
-          <label className="form-label text-secondary small">Status</label>
+          <label className="form-label text-slate-600 small fw-semibold">Status</label>
           <select
-            className="form-select bg-dark bg-opacity-25 text-white border-secondary border-opacity-25"
+            className="form-select bg-white text-slate-800 border-light"
             value={formData.status}
             onChange={(e) => setFormData({...formData, status: e.target.value})}
           >
-            <option value="ACTIVE" className="bg-dark">ACTIVE</option>
-            <option value="OUT_OF_SERVICE" className="bg-dark">OUT OF SERVICE</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="OUT_OF_SERVICE">OUT OF SERVICE</option>
           </select>
         </div>
 
-        <div className="col-md-6">
-          <label className="form-label text-secondary small">Resource Image</label>
+        <div className="col-12 mt-3">
+          <label className="form-label text-slate-600 small fw-semibold">Resource Image</label>
           <div className="input-group">
             <input
               type="file"
-              className={`form-control bg-dark bg-opacity-25 text-white border-secondary border-opacity-25 ${errors.image ? 'is-invalid' : ''}`}
+              className={`form-control bg-white text-slate-800 border-light ${errors.image ? 'is-invalid' : ''}`}
               accept="image/*"
               onChange={handleImageChange}
               disabled={isUploading}
             />
             {isUploading && (
-              <span className="input-group-text bg-dark border-secondary border-opacity-25 text-primary">
+              <span className="input-group-text bg-white border-light text-primary">
                 <BiLoaderAlt className="spinner-border spinner-border-sm border-0" />
               </span>
             )}
           </div>
           {imageUrl && (
             <div className="mt-2 position-relative d-inline-block">
-              <img src={imageUrl} alt="Preview" className="rounded-3 border border-white border-opacity-10 shadow-sm" style={{ height: '60px', width: '100px', objectFit: 'cover' }} />
-              <BiCheckCircle className="position-absolute top-0 end-0 text-success bg-dark rounded-circle translate-middle" />
+              <img src={imageUrl} alt="Preview" className="rounded-3 border border-light shadow-sm" style={{ height: '60px', width: '100px', objectFit: 'cover' }} />
+              <BiCheckCircle className="position-absolute top-0 end-0 text-success bg-white rounded-circle translate-middle" />
             </div>
           )}
         </div>
@@ -293,6 +293,12 @@ const AddResourceForm = ({ onResourceAdded }) => {
           </motion.button>
         </div>
       </form>
+
+      <style>{`
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-600 { color: #475569; }
+        .border-light { border-color: #e2e8f0 !important; }
+      `}</style>
     </motion.div>
   );
 };
