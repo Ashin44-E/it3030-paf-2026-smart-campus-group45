@@ -6,7 +6,6 @@ import TechnicianStatsCards from '../components/technician-dashboard/TechnicianS
 import AssignedTicketsPanel from '../components/technician-dashboard/AssignedTicketsPanel';
 import TicketDetailsModal from '../components/technician-dashboard/TicketDetailsModal';
 import NotificationsPanel from '../components/technician-dashboard/NotificationsPanel';
-import WorkSummaryPanel from '../components/technician-dashboard/WorkSummaryPanel';
 import BookingApprovalPanel from '../components/admin-dashboard/BookingApprovalPanel';
 import BookingDetailsModal from '../components/technician-dashboard/BookingDetailsModal';
 import { useAuth } from '../context/AuthContext';
@@ -37,12 +36,20 @@ const TechnicianDashboard = () => {
   const fetchData = async () => {
     try {
       const [resTickets, resNotifs, resBookings] = await Promise.all([
-        axiosInstance.get('/tickets/assigned').catch(() => ({ data: [] })),
+        axiosInstance.get('/tickets/assigned').catch((err) => {
+          console.warn('Could not fetch assigned tickets:', err.response?.status, err.message);
+          return { data: [] };
+        }),
         axiosInstance.get('/notifications').catch(() => ({ data: [] })),
         axiosInstance.get('/bookings').catch(() => ({ data: [] }))
       ]);
 
-      const mockTickets = resTickets.data.length ? resTickets.data : [
+      const tickets = Array.isArray(resTickets.data) ? resTickets.data : [];
+      const notifications = Array.isArray(resNotifs.data) ? resNotifs.data : [];
+      const bookings = Array.isArray(resBookings.data) ? resBookings.data : [];
+
+      // Only use mock data if API returned nothing at all
+      const displayTickets = tickets.length > 0 ? tickets : [
         { 
           id: 'T-882', 
           title: 'AC Unit Malfunction - Hall 3', 
@@ -50,29 +57,30 @@ const TechnicianDashboard = () => {
           priority: 'HIGH', 
           status: 'IN_PROGRESS', 
           reportedBy: 'Dr. Sarah Miller',
+          reporterName: 'Dr. Sarah Miller',
           reportedDate: '2026-04-16',
           resourceName: 'Lecture Hall 3',
           description: 'The AC unit is making loud grinding noises and not cooling the room. It started during a lecture this morning.'
         }
       ];
 
-      const pendingBookings = resBookings.data.filter(b => b.status === 'PENDING');
-
-      const mockNotifs = resNotifs.data.length ? resNotifs.data : [
+      const displayNotifs = notifications.length > 0 ? notifications : [
         { id: 1, type: 'ASSIGNMENT', message: 'New high priority ticket assigned: AC Unit Hall 3', timestamp: '1 hour ago', read: false }
       ];
 
+      const pendingBookings = bookings.filter(b => b.status === 'PENDING');
+
       setData({
         stats: {
-          assignedTickets: mockTickets.length,
-          inProgressTickets: mockTickets.filter(t => t.status === 'IN_PROGRESS').length,
+          assignedTickets: displayTickets.length,
+          inProgressTickets: displayTickets.filter(t => t.status === 'IN_PROGRESS').length,
           resolvedTickets: 12,
-          notifications: mockNotifs.filter(n => !n.read).length,
+          notifications: displayNotifs.filter(n => !n.read).length,
           pendingBookings: pendingBookings.length
         },
-        tickets: mockTickets,
-        bookings: resBookings.data,
-        notifications: mockNotifs
+        tickets: displayTickets,
+        bookings: bookings,
+        notifications: displayNotifs
       });
     } catch (err) {
       console.error("Failed to fetch technician data", err);
@@ -108,21 +116,30 @@ const TechnicianDashboard = () => {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      // Real API: await axiosInstance.patch(`/tickets/${id}/status`, { status: newStatus });
-      setData(prev => ({
-        ...prev,
-        tickets: prev.tickets.map(t => t.id === id ? { ...t, status: newStatus } : t)
-      }));
+      await axiosInstance.patch(`/tickets/${id}/status`, { status: newStatus });
+      toast.success(`Ticket status updated to ${newStatus}`);
+      fetchData();
       if (selectedTicket && selectedTicket.id === id) {
         setSelectedTicket({ ...selectedTicket, status: newStatus });
       }
     } catch (err) {
-      console.error(err);
+      toast.error("Failed to update status");
     }
   };
 
-  const handleSaveResolution = async (id, resolution) => {
-     console.log("Saving resolution for", id, resolution);
+  const handleSaveResolution = async (id, notes, resolve = true) => {
+    try {
+      const newStatus = resolve ? 'RESOLVED' : (selectedTicket?.status === 'OPEN' ? 'IN_PROGRESS' : selectedTicket?.status);
+      await axiosInstance.patch(`/tickets/${id}/status`, { 
+        status: newStatus,
+        notes,
+      });
+      toast.success(resolve ? 'Ticket resolved and notes saved' : 'Resolution notes saved');
+      fetchData();
+      setIsModalOpen(false);
+    } catch (err) {
+      toast.error('Failed to save resolution');
+    }
   };
 
   const openTicketDetails = (ticket) => {
@@ -184,7 +201,6 @@ const TechnicianDashboard = () => {
 
             <div className="col-12 col-xl-4 d-flex flex-column gap-4">
               <NotificationsPanel notifications={data.notifications} />
-              <WorkSummaryPanel />
             </div>
           </div>
         </main>

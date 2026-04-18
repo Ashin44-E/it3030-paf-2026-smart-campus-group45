@@ -16,7 +16,11 @@ import OAuth2Callback from './pages/OAuth2Callback';
 import DashboardRedirect from './components/DashboardRedirect';
 import BookAssets from './pages/BookAssets';
 import MyBookings from './pages/MyBookings';
+import MyTickets from './pages/MyTickets';
 import TechnicianBookings from './pages/technician/TechnicianBookings';
+import TechnicianTickets from './pages/technician/TechnicianTickets';
+import ReportIncident from './pages/ReportIncident';
+import ManageTickets from './pages/ManageTickets';
 
 function App() {
   return (
@@ -37,6 +41,8 @@ function App() {
             <Route path="/dashboard/user" element={<UserDashboard />} />
             <Route path="/dashboard/user/book-assets" element={<BookAssets />} />
             <Route path="/dashboard/user/bookings" element={<MyBookings />} />
+            <Route path="/dashboard/user/tickets" element={<MyTickets />} />
+            <Route path="/dashboard/user/report-incident" element={<ReportIncident />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
@@ -44,11 +50,15 @@ function App() {
             <Route path="/dashboard/admin/resources" element={<ManageResources />} />
             <Route path="/dashboard/admin/bookings" element={<ManageBookings />} />
             <Route path="/dashboard/admin/users" element={<ManageUsers />} />
+            <Route path="/dashboard/admin/tickets" element={<ManageTickets />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['TECHNICIAN']} />}>
             <Route path="/dashboard/technician" element={<TechnicianDashboard />} />
             <Route path="/dashboard/technician/bookings" element={<TechnicianBookings />} />
+            <Route path="/dashboard/technician/assigned" element={<TechnicianTickets />} />
+            <Route path="/dashboard/technician/in-progress" element={<TechnicianTickets />} />
+            <Route path="/dashboard/technician/resolved" element={<TechnicianTickets />} />
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />
