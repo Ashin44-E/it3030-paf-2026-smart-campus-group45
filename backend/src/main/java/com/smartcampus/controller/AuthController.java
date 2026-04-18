@@ -4,6 +4,7 @@ import com.smartcampus.dto.AuthResponse;
 import com.smartcampus.dto.LoginRequest;
 import com.smartcampus.dto.RegisterRequest;
 import com.smartcampus.dto.ChangePasswordRequest;
+import com.smartcampus.dto.GoogleAuthRequest;
 import com.smartcampus.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,10 @@ public class AuthController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<AuthResponse> googleLogin(@RequestBody GoogleAuthRequest request) {
+        return ResponseEntity.ok(authService.processGoogleLogin(request.getCredential()));
     }
 }
