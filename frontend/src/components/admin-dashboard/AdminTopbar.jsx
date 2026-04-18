@@ -1,9 +1,15 @@
-import React from 'react';
-import { BiBell, BiSearch, BiUserCircle, BiLogOut } from 'react-icons/bi';
+import React, { useState } from 'react';
+import { BiBell, BiSearch, BiUserCircle, BiLogOut, BiSend } from 'react-icons/bi';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../hooks/useNotifications';
+import NotificationSlider from '../dashboard/NotificationSlider';
+import SendNotificationModal from '../dashboard/SendNotificationModal';
 
 const AdminTopbar = () => {
-  const { user, logout } = useAuth();
+  const { user, role, logout } = useAuth();
+  const { unreadCount } = useNotifications();
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
 
   return (
     <div 
@@ -26,9 +32,23 @@ const AdminTopbar = () => {
         </div>
         
         <div className="ms-auto d-flex align-items-center gap-4">
-          <div className="position-relative cursor-pointer hover-opacity-75 p-2 rounded-circle hover-bg-light">
+          <button 
+            className="btn btn-primary btn-sm d-flex align-items-center gap-2 rounded-pill px-3 shadow-sm fw-bold"
+            onClick={() => setIsSendModalOpen(true)}
+          >
+            <BiSend size={16} /> <span className="d-none d-sm-inline">Send Broadcast</span>
+          </button>
+
+          <div 
+            className="position-relative cursor-pointer hover-opacity-75 p-2 rounded-circle hover-bg-light"
+            onClick={() => setIsNotifOpen(true)}
+          >
             <BiBell size={22} className="text-slate-500" />
-            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-white rounded-circle" style={{ width: '8px', height: '8px' }}></span>
+            {unreadCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style={{ fontSize: '0.6rem' }}>
+                {unreadCount}
+              </span>
+            )}
           </div>
 
           <div className="d-flex align-items-center gap-3 border-start border-light ps-4">
@@ -74,6 +94,8 @@ const AdminTopbar = () => {
         .hover-opacity-75:hover { opacity: 0.75; }
         .cursor-pointer { cursor: pointer; }
       `}</style>
+      <NotificationSlider isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} />
+      <SendNotificationModal isOpen={isSendModalOpen} onClose={() => setIsSendModalOpen(false)} role="ADMIN" />
     </div>
   );
 };

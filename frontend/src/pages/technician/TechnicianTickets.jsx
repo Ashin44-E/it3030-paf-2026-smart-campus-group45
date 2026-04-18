@@ -168,10 +168,16 @@ const TechnicianTickets = () => {
                         <p className="mb-0 text-slate-700 small fw-medium">{ticket.resourceName || ticket.location || 'Unknown'}</p>
                       </div>
 
-                      {/* Reporter */}
-                      <div className="mb-4">
-                        <p className="mb-0 text-slate-400 small fw-bold text-uppercase" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Reported By</p>
-                        <p className="mb-0 text-slate-700 small fw-medium">{ticket.reporterName || ticket.reportedBy || 'Unknown'}</p>
+                      {/* Reporter & Date */}
+                      <div className="row g-2 mb-4">
+                        <div className="col-6">
+                          <p className="mb-0 text-slate-400 small fw-bold text-uppercase" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Reported By</p>
+                          <p className="mb-0 text-slate-700 small fw-medium text-truncate">{ticket.reporterName || ticket.reportedBy || 'Unknown'}</p>
+                        </div>
+                        <div className="col-6">
+                          <p className="mb-0 text-slate-400 small fw-bold text-uppercase" style={{ fontSize: '0.6rem', letterSpacing: '0.05em' }}>Date Reported</p>
+                          <p className="mb-0 text-slate-700 small fw-medium text-truncate">{ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Unknown'}</p>
+                        </div>
                       </div>
 
                       {/* Actions */}

@@ -5,10 +5,10 @@ import StatsCards from '../components/dashboard/StatsCards';
 import BookingList from '../components/dashboard/BookingList';
 import TicketList from '../components/dashboard/TicketList';
 import QuickActions from '../components/dashboard/QuickActions';
-import NotificationPanel from '../components/dashboard/NotificationPanel';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import { motion } from 'framer-motion';
+import ProfileModal from '../components/dashboard/ProfileModal';
 
 const UserDashboard = () => {
   const { user } = useAuth();
@@ -24,6 +24,7 @@ const UserDashboard = () => {
     }
   });
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,11 +73,11 @@ const UserDashboard = () => {
   return (
     <div className="d-flex bg-light min-vh-100 overflow-hidden">
       {/* Sidebar - Fixed on desktop */}
-      <Sidebar />
+      <Sidebar onProfileClick={() => setIsProfileModalOpen(true)} />
 
       {/* Main Content Area */}
       <div className="flex-grow-1 d-flex flex-column" style={{ marginLeft: '260px' }}>
-        <Topbar notificationCount={data.stats.notifications} />
+        <Topbar />
 
         <main className="p-4 p-lg-5 overflow-auto">
           {/* Welcome Section */}
@@ -113,13 +114,6 @@ const UserDashboard = () => {
         </main>
       </div>
 
-      {/* Slide-in Notifications Panel */}
-      <NotificationPanel 
-        notifications={data.notifications} 
-        isOpen={isNotifOpen} 
-        onClose={() => setIsNotifOpen(false)} 
-      />
-
       <style>{`
         .text-slate-900 { color: #0f172a; }
         .text-slate-500 { color: #64748b; }
@@ -130,6 +124,13 @@ const UserDashboard = () => {
           }
         }
       `}</style>
+      
+      <ProfileModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+        user={user} 
+        role="User" 
+      />
     </div>
   );
 };

@@ -23,7 +23,6 @@ const AdminSidebar = () => {
     { name: 'Manage Bookings', icon: <BiCalendarCheck />, path: '/dashboard/admin/bookings' },
     { name: 'Manage Tickets', icon: <BiWrench />, path: '/dashboard/admin/tickets' },
     { name: 'Manage Users', icon: <BiGroup />, path: '/dashboard/admin/users' },
-    { name: 'Notifications', icon: <BiBell />, path: '/dashboard/admin/notifications' },
     { name: 'Reports / Analytics', icon: <BiBarChartSquare />, path: '/dashboard/admin/reports' },
     { name: 'Profile', icon: <BiUser />, path: '/dashboard/admin/profile' },
   ];

@@ -129,7 +129,7 @@ const TicketDetailModal = ({ ticket, onClose }) => {
                 { label: 'Category', value: ticket.category, icon: <BiFilter />, color: '#0ea5e9', bg: '#e0f2fe' },
                 { label: 'Location', value: ticket.resourceName || ticket.location || 'N/A', icon: <BiMap />, color: '#6366f1', bg: '#ede9fe' },
                 { label: 'Assigned To', value: ticket.technicianName || 'Unassigned', icon: <BiWrench />, color: '#f59e0b', bg: '#fef3c7' },
-                { label: 'Reported', value: ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : 'N/A', icon: <BiCalendar />, color: '#10b981', bg: '#d1fae5' },
+                { label: 'Reported', value: ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'N/A', icon: <BiCalendar />, color: '#10b981', bg: '#d1fae5' },
               ].map(item => (
                 <div key={item.label} className="col-6">
                   <div style={{ background: '#fff', border: '1.5px solid #e8eeff', borderRadius: '12px', padding: '12px' }}>

@@ -12,7 +12,7 @@ import {
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
-const Sidebar = () => {
+const Sidebar = ({ onProfileClick }) => {
   const { logout } = useAuth();
 
   const menuItems = [
@@ -20,9 +20,8 @@ const Sidebar = () => {
     { name: 'My Bookings', icon: <BiCalendarCheck />, path: '/dashboard/user/bookings' },
     { name: 'Create Booking', icon: <BiPlusCircle />, path: '/dashboard/user/book-assets' },
     { name: 'My Tickets', icon: <BiWrench />, path: '/dashboard/user/tickets' },
-    { name: 'Create Ticket', icon: <BiPlusCircle />, path: '/dashboard/user/create-ticket' },
-    { name: 'Notifications', icon: <BiBell />, path: '/dashboard/user/notifications' },
-    { name: 'Profile', icon: <BiUser />, path: '/dashboard/user/profile' },
+    { name: 'Create Ticket', icon: <BiPlusCircle />, path: '/dashboard/user/report-incident' },
+    { name: 'Profile', icon: <BiUser />, isAction: true, onClick: onProfileClick },
   ];
 
   return (
@@ -38,20 +37,31 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex-grow-1 px-3 mt-3 overflow-auto">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.path}
-            className={({ isActive }) => 
-              `nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all ${
-                isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover-bg-light'
-              }`
-            }
-          >
-            <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
-            <span className="small fw-bold">{item.name}</span>
-          </NavLink>
-        ))}
+        {menuItems.map((item) => 
+          item.isAction ? (
+            <button
+              key={item.name}
+              onClick={item.onClick}
+              className="btn btn-link nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all text-slate-600 hover-bg-light text-decoration-none text-start border-0 w-100"
+            >
+              <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+              <span className="small fw-bold">{item.name}</span>
+            </button>
+          ) : (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              className={({ isActive }) => 
+                `nav-link d-flex align-items-center gap-3 px-3 py-3 rounded-3 mb-1 transition-all ${
+                  isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover-bg-light'
+                }`
+              }
+            >
+              <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+              <span className="small fw-bold">{item.name}</span>
+            </NavLink>
+          )
+        )}
       </nav>
 
       <div className="p-3 border-top border-light">
