@@ -31,5 +31,8 @@ public class User {
     private AuthProvider provider;
     
     @Builder.Default
+    private boolean active = true;
+
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

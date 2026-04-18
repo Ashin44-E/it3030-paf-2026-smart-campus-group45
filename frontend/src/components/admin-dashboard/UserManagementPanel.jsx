@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BiGroup, BiUserCircle, BiShieldQuarter, BiWrench, BiDotsVerticalRounded } from 'react-icons/bi';
+import { BiGroup, BiUserCircle, BiShieldQuarter, BiWrench, BiDotsVerticalRounded, BiArrowToRight } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 
 const UserManagementPanel = ({ users = [], onChangeRole }) => {
+  const navigate = useNavigate();
   const getRoleBadge = (role) => {
     switch (role) {
       case 'ADMIN': return 'badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25';
@@ -25,9 +27,13 @@ const UserManagementPanel = ({ users = [], onChangeRole }) => {
           </div>
           System User Directory
         </h3>
-        <div className="input-group input-group-sm w-auto">
-          <input type="text" className="form-control bg-light border-light text-slate-800 small px-3 shadow-none" placeholder="Filter users..." style={{ fontSize: '0.75rem' }} />
-        </div>
+        <button 
+          onClick={() => navigate('/dashboard/admin/users')}
+          className="btn btn-link btn-sm text-primary text-decoration-none fw-bold d-flex align-items-center gap-1 shadow-none"
+          style={{ fontSize: '0.75rem' }}
+        >
+          Manage All Users <BiArrowToRight />
+        </button>
       </div>
 
       <div className="table-responsive">

@@ -7,84 +7,104 @@ import AssignedTicketsPanel from '../components/technician-dashboard/AssignedTic
 import TicketDetailsModal from '../components/technician-dashboard/TicketDetailsModal';
 import NotificationsPanel from '../components/technician-dashboard/NotificationsPanel';
 import WorkSummaryPanel from '../components/technician-dashboard/WorkSummaryPanel';
+import BookingApprovalPanel from '../components/admin-dashboard/BookingApprovalPanel';
+import BookingDetailsModal from '../components/technician-dashboard/BookingDetailsModal';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
+import toast from 'react-hot-toast';
 
 const TechnicianDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   
   const [data, setData] = useState({
     stats: {
       assignedTickets: 0,
       inProgressTickets: 0,
       resolvedTickets: 0,
-      notifications: 0
+      notifications: 0,
+      pendingBookings: 0
     },
     tickets: [],
+    bookings: [],
     notifications: []
   });
 
+  const fetchData = async () => {
+    try {
+      const [resTickets, resNotifs, resBookings] = await Promise.all([
+        axiosInstance.get('/tickets/assigned').catch(() => ({ data: [] })),
+        axiosInstance.get('/notifications').catch(() => ({ data: [] })),
+        axiosInstance.get('/bookings').catch(() => ({ data: [] }))
+      ]);
+
+      const mockTickets = resTickets.data.length ? resTickets.data : [
+        { 
+          id: 'T-882', 
+          title: 'AC Unit Malfunction - Hall 3', 
+          category: 'HVAC', 
+          priority: 'HIGH', 
+          status: 'IN_PROGRESS', 
+          reportedBy: 'Dr. Sarah Miller',
+          reportedDate: '2026-04-16',
+          resourceName: 'Lecture Hall 3',
+          description: 'The AC unit is making loud grinding noises and not cooling the room. It started during a lecture this morning.'
+        }
+      ];
+
+      const pendingBookings = resBookings.data.filter(b => b.status === 'PENDING');
+
+      const mockNotifs = resNotifs.data.length ? resNotifs.data : [
+        { id: 1, type: 'ASSIGNMENT', message: 'New high priority ticket assigned: AC Unit Hall 3', timestamp: '1 hour ago', read: false }
+      ];
+
+      setData({
+        stats: {
+          assignedTickets: mockTickets.length,
+          inProgressTickets: mockTickets.filter(t => t.status === 'IN_PROGRESS').length,
+          resolvedTickets: 12,
+          notifications: mockNotifs.filter(n => !n.read).length,
+          pendingBookings: pendingBookings.length
+        },
+        tickets: mockTickets,
+        bookings: resBookings.data,
+        notifications: mockNotifs
+      });
+    } catch (err) {
+      console.error("Failed to fetch technician data", err);
+      toast.error("Failed to refresh dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTechnicianData = async () => {
-      try {
-        const [resTickets, resNotifs] = await Promise.all([
-          axiosInstance.get('/tickets/assigned').catch(() => ({ data: [] })),
-          axiosInstance.get('/notifications').catch(() => ({ data: [] }))
-        ]);
-
-        // Mock data for initial development
-        const mockTickets = resTickets.data.length ? resTickets.data : [
-          { 
-            id: 'T-882', 
-            title: 'AC Unit Malfunction - Hall 3', 
-            category: 'HVAC', 
-            priority: 'HIGH', 
-            status: 'IN_PROGRESS', 
-            reportedBy: 'Dr. Sarah Miller',
-            reportedDate: '2026-04-16',
-            resourceName: 'Lecture Hall 3',
-            description: 'The AC unit is making loud grinding noises and not cooling the room. It started during a lecture this morning.'
-          },
-          { 
-            id: 'T-885', 
-            title: 'Broken Projector Screen', 
-            category: 'IT / AV', 
-            priority: 'MEDIUM', 
-            status: 'OPEN', 
-            reportedBy: 'Student Union',
-            reportedDate: '2026-04-15',
-            resourceName: 'Meeting Room B',
-            description: 'The automated screen is stuck halfway and wont respond to controls.'
-          }
-        ];
-
-        const mockNotifs = resNotifs.data.length ? resNotifs.data : [
-          { id: 1, type: 'ASSIGNMENT', message: 'New high priority ticket assigned: AC Unit Hall 3', timestamp: '1 hour ago', read: false },
-          { id: 2, type: 'COMMENT', message: 'Admin Alice added a comment to Ticket #T-882', timestamp: '2 hours ago', read: true }
-        ];
-
-        setData({
-          stats: {
-            assignedTickets: mockTickets.length,
-            inProgressTickets: mockTickets.filter(t => t.status === 'IN_PROGRESS').length,
-            resolvedTickets: 12, // Dummy historical stat
-            notifications: mockNotifs.filter(n => !n.read).length
-          },
-          tickets: mockTickets,
-          notifications: mockNotifs
-        });
-      } catch (err) {
-        console.error("Failed to fetch technician data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTechnicianData();
+    fetchData();
   }, []);
+
+  const handleApproveBooking = async (id) => {
+    try {
+      await axiosInstance.patch(`/bookings/${id}/status?status=APPROVED`);
+      toast.success("Booking approved successfully");
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.response?.data || "Failed to approve booking");
+    }
+  };
+
+  const handleRejectBooking = async (id, reason) => {
+    try {
+      await axiosInstance.patch(`/bookings/${id}/status?status=REJECTED&reason=${encodeURIComponent(reason)}`);
+      toast.success("Booking rejected");
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data || "Failed to reject booking");
+    }
+  };
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -103,7 +123,6 @@ const TechnicianDashboard = () => {
 
   const handleSaveResolution = async (id, resolution) => {
      console.log("Saving resolution for", id, resolution);
-     // Real API: await axiosInstance.patch(`/tickets/${id}/resolution`, resolution);
   };
 
   const openTicketDetails = (ticket) => {
@@ -111,17 +130,19 @@ const TechnicianDashboard = () => {
     setIsModalOpen(true);
   };
 
+  const openBookingDetails = (booking) => {
+    setSelectedBooking(booking);
+    setIsBookingModalOpen(true);
+  };
+
   return (
     <div className="d-flex bg-light min-vh-100 overflow-hidden">
-      {/* Technician Sidebar */}
       <TechnicianSidebar />
 
-      {/* Main Content Area */}
       <div className="flex-grow-1 d-flex flex-column overflow-auto" style={{ marginLeft: '280px' }}>
         <TechnicianTopbar notificationCount={data.stats.notifications} />
 
         <main className="p-4 p-lg-5">
-          {/* Welcome Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,20 +162,26 @@ const TechnicianDashboard = () => {
             </div>
           </motion.div>
 
-          {/* Stats Section */}
           <TechnicianStatsCards stats={data.stats} />
 
           <div className="row g-4 mb-4">
-            {/* Main Work Panel */}
             <div className="col-12 col-xl-8">
               <AssignedTicketsPanel 
                 tickets={data.tickets} 
                 onViewDetails={openTicketDetails}
                 onUpdateStatus={handleUpdateStatus}
               />
+              
+              <div className="mt-4">
+                <BookingApprovalPanel 
+                  bookings={data.bookings} 
+                  onApprove={handleApproveBooking} 
+                  onReject={handleRejectBooking} 
+                  onViewDetails={openBookingDetails}
+                />
+              </div>
             </div>
 
-            {/* Notifications & Metrics Side Column */}
             <div className="col-12 col-xl-4 d-flex flex-column gap-4">
               <NotificationsPanel notifications={data.notifications} />
               <WorkSummaryPanel />
@@ -163,6 +190,7 @@ const TechnicianDashboard = () => {
         </main>
       </div>
 
+
       {/* Detail Modal Container */}
       <TicketDetailsModal 
         isOpen={isModalOpen}
@@ -170,6 +198,14 @@ const TechnicianDashboard = () => {
         ticket={selectedTicket}
         onUpdateStatus={handleUpdateStatus}
         onSaveNote={handleSaveResolution}
+      />
+
+      <BookingDetailsModal 
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        booking={selectedBooking}
+        onApprove={handleApproveBooking}
+        onReject={handleRejectBooking}
       />
 
       <style>{`

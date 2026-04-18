@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BiCheck, BiX, BiInfoCircle } from 'react-icons/bi';
+// Modal removed to be handled by parent for better layout
 
-const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
+const BookingApprovalPanel = ({ bookings = [], onApprove, onReject, onViewDetails, currentFilter = 'ALL' }) => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+
+  const handleOpenDetails = (booking) => {
+    if (onViewDetails) {
+      onViewDetails(booking);
+    }
+  };
 
   const handleOpenReject = (booking) => {
     setSelectedBooking(booking);
@@ -35,7 +42,9 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
           <div className="p-1 rounded bg-primary bg-opacity-10 text-primary">
             <BiInfoCircle size={18} />
           </div>
-          Booking Approval Queue
+          {currentFilter === 'PENDING' ? 'Booking Approval Queue' : 
+           currentFilter === 'ALL' ? 'All Booking Requests' : 
+           `${currentFilter.charAt(0) + currentFilter.slice(1).toLowerCase()} Bookings`}
         </h3>
         <button className="btn btn-white btn-sm rounded-pill px-3 py-1 border-light text-slate-500 shadow-sm ls-wide" style={{ fontSize: '0.75rem' }}>VIEW HISTORY</button>
       </div>
@@ -47,6 +56,8 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
               <th className="fw-bold text-slate-800 text-uppercase ls-wide ps-3" style={{ fontSize: '0.65rem' }}>User</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Resource</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide text-center" style={{ fontSize: '0.65rem' }}>Date & Time</th>
+              <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Purpose</th>
+              <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Contact</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide" style={{ fontSize: '0.65rem' }}>Status</th>
               <th className="fw-bold text-slate-800 text-uppercase ls-wide text-end pe-3" style={{ fontSize: '0.65rem' }}>Actions</th>
             </tr>
@@ -70,6 +81,12 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
                   <div className="text-slate-500 small" style={{ fontSize: '0.75rem' }}>{booking.timeRange}</div>
                 </td>
                 <td>
+                  <div className="text-slate-700 small text-truncate" style={{ maxWidth: '120px' }} title={booking.purpose}>
+                    {booking.purpose}
+                  </div>
+                </td>
+                <td className="text-slate-700 small">{booking.phoneNumber}</td>
+                <td>
                   <span className={getStatusBadge(booking.status)}>
                     {booking.status}
                   </span>
@@ -79,7 +96,7 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
                     {booking.status === 'PENDING' && (
                       <>
                         <button 
-                          onClick={() => onApprove(booking.id)}
+                          onClick={() => onApprove(booking.id || booking._id)}
                           className="btn btn-primary btn-icon-sm shadow-sm rounded-circle"
                           title="Approve"
                         >
@@ -94,7 +111,11 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
                         </button>
                       </>
                     )}
-                    <button className="btn btn-white btn-icon-sm border-light text-slate-500 shadow-sm rounded-circle" title="View Details">
+                    <button 
+                      onClick={() => handleOpenDetails(booking)}
+                      className="btn btn-white btn-icon-sm border-light text-slate-500 shadow-sm rounded-circle" 
+                      title="View Details"
+                    >
                       <BiInfoCircle size={18} />
                     </button>
                   </div>
@@ -102,7 +123,9 @@ const BookingApprovalPanel = ({ bookings = [], onApprove, onReject }) => {
               </motion.tr>
             )) : (
               <tr>
-                <td colSpan="5" className="text-center py-5 text-slate-400 small italic">No pending bookings in the queue.</td>
+                <td colSpan="5" className="text-center py-5 text-slate-400 small italic">
+                  No {currentFilter !== 'ALL' ? currentFilter.toLowerCase() : ''} bookings found.
+                </td>
               </tr>
             )}
           </tbody>
